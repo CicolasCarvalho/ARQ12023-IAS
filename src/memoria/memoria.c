@@ -1,15 +1,18 @@
 #include "./memoria.h"
 
-Memoria *memoria_criar(void) {
+Memoria *memoria_criar(int tamanho, int tamanho_dados) {
     Memoria *mem = malloc(sizeof(Memoria));
 
-    memset(mem->dados, 0b00000000, TAMANHO_REAL);
+    mem->tamanho = tamanho;
+    mem->tamanho_dados = tamanho_dados;
+    mem->dados = malloc(tamanho * 5);
+    memset(mem->dados, 0b00000000, tamanho * 5);
 
     return mem;
 }
 
 void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal) {
-    if (pos >= TAMANHO) RAISE("'%d' nao é uma posicao valida", pos);
+    // if (pos >= TAMANHO) RAISE("'%d' nao é uma posicao valida", pos);
 
     uint relativo = pos * 5;
 
@@ -21,7 +24,7 @@ void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal) {
 }
 
 PALAVRA memoria_ler(Memoria *mem, uint pos) {
-    if (pos >= TAMANHO) RAISE("'%d' nao é uma posicao valida", pos);
+    // if (pos >= TAMANHO) RAISE("'%d' nao é uma posicao valida", pos);
 
     uint relativo = pos * 5;
 

@@ -4,6 +4,9 @@
         "defs.h": "c",
         "compilador.h": "c",
         "decoder.h": "c",
-        "memoria.h": "c"
+        "memoria.h": "c",
+        "stdint.h": "c",
+        "ias.h": "c",
+        "tradutor.h": "c"
     }
 }

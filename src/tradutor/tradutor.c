@@ -36,6 +36,7 @@ static Simbolo peek_simbolo(char *linha);
 static bool e_numero(char *str);
 static Simbolo except_proximo_simbolo(char **linha, SimbolosEnum tipo, int num_linha);
 static void compilar_linha(char *linha, Memoria *mem, int num_linha);
+static void compilar_secao_configuracao(FILE *in, IAS *ias);
 static void compilar_secao_dados(FILE *in, Memoria *mem);
 static void compilar_secao_programa(FILE *in, Memoria *mem);
 static long parse_numero(char **linha, int num_linha);
@@ -49,32 +50,40 @@ static char fpeek(FILE *f);
 
 //-Funcoes-------------------------------------------------------------------------------------------------------------------
 
-void compilar_para_arquivo(char *in, char *out) {
+void compilar_para_arquivo(char *in, char *out, int tamanho, int tamanho_dados) {
     FILE *f = fopen(in, "r");
     if (!f) RAISE("Arquivo '%s' não encontrado", in);
     FILE *f_out = fopen(out, "w");
     if (!f_out) RAISE("Arquivo '%s' não encontrado", out);
 
-    Memoria *mem = compilar_para_memoria(f);
+    Memoria *mem = memoria_criar(tamanho, tamanho_dados);
+
+    compilar_para_memoria(f, mem);
     memoria_para_arquivo(f_out, mem);
 
     fclose(f);
     fclose(f_out);
 }
 
-Memoria *compilar_para_memoria(FILE *in) {
-    Memoria *mem = memoria_criar();
+void compilar_para_memoria(FILE *in, Memoria *mem) {
+    if (mem == NULL) RAISE("Memoria não pode ser nula");
 
+    compilar_secao_configuracao(in, NULL);
     compilar_secao_dados(in, mem);
     compilar_secao_programa(in, mem);
-
-    return mem;
 }
 
 //-Funcoes estaticas---------------------------------------------------------------------------------------------------------
 
+static void compilar_secao_configuracao(FILE *in, IAS *ias) {
+    for (int i = 0; i < NUM_INSTRUCOES; i++) {
+        
+    }
+    
+}
+
 static void compilar_secao_dados(FILE *in, Memoria *mem) {
-    for (int i = 0; i < TAMANHO_DADOS; i++) {
+    for (int i = 0; i < mem->tamanho_dados; i++) {
         long long dado = 0;
         if (fscanf(in, "%lli", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
         
@@ -93,7 +102,7 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
     char op[128] = "\0";
     int op_len = 0;
     char c = '\0';
-    int i = TAMANHO_DADOS;
+    int i = mem->tamanho_dados;
     bool fim = false;
 
     while (!fim) {
@@ -116,9 +125,13 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
     }
 }
 
+static void compilar_linha_configuracao(char *linha, IAS *ias, int num_linha) {
+
+}
+
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
-    num_linha = (num_linha - TAMANHO_DADOS) / 2 + TAMANHO_DADOS;
+    num_linha = (num_linha - mem->tamanho_dados) / 2 + mem->tamanho_dados;
 
     if (strcmp(nome_operacao, "LSH") == 0 || strcmp(nome_operacao, "RSH") == 0 || strcmp(nome_operacao, "EXIT") == 0) {
         if (nome_operacao[0] == 'L')

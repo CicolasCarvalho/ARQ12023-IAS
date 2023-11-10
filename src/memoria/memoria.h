@@ -1,25 +1,19 @@
 #ifndef MEMORIA_H_
 #define MEMORIA_H_
 
-#include "../defs.h"
-#define TAMANHO 4096
-#define TAMANHO_REAL TAMANHO * 5
-#define TAMANHO_DADOS 500
-
-#define PALAVRA unsigned long long
-#define INSTRUCAO unsigned char
-#define ARGUMENTO short
-#define MASK 0xFFFFFFFFFFll
-#define OP_MASK 0xFFll
-#define ARGUMENTO_MASK 0xFFFll
+#include <stdint.h>
+#include "../defs/defs.h"
+#include "../utils.h"
 
 typedef struct {
+    int tamanho;
+    int tamanho_dados;
     // 4096 * 40
     // 4096 * 5 * 8
-    unsigned char dados[TAMANHO_REAL];
+    uint8_t *dados;
 } Memoria;
 
-Memoria *memoria_criar(void);
+Memoria *memoria_criar(int tamanho, int tamanho_dados);
 void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal);
 PALAVRA memoria_ler(Memoria *mem, uint pos);
 void adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint pos);
