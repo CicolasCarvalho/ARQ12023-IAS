@@ -79,13 +79,12 @@ static void compilar_secao_configuracao(FILE *in, IAS *ias) {
     for (int i = 0; i < NUM_INSTRUCOES; i++) {
         
     }
-    
 }
 
 static void compilar_secao_dados(FILE *in, Memoria *mem) {
     for (int i = 0; i < mem->tamanho_dados; i++) {
-        long long dado = 0;
-        if (fscanf(in, "%lli", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
+        int64_t dado = 0;
+        if (fscanf(in, "%li", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
         
         bool negativo = dado < 0;
         dado = llabs(dado);
