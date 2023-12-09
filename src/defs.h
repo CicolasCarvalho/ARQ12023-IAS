@@ -5,6 +5,16 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef MAX_H_
+    #define MAX_H_
+    #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+
+#ifndef MIN_H_
+    #define MIN_H_
+    #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
+
 #ifndef LOG_H_
     #define LOG_H_
     #define PRINT(...)                             \
@@ -31,8 +41,8 @@
     typedef unsigned int uint;
 #endif
 
-#ifndef STRCON_
-    #define STRCON_
+// #ifndef STRCON_
+    // #define STRCON_
     // ///@brief Retorna se uma string contem um caracter
     // bool strcon(const char *str, char c) {
     //     for (uint i = 0; i < strlen(str); i++) 
@@ -40,6 +50,6 @@
 
     //     return false;
     // }
-#endif
+// #endif
 
 #endif
