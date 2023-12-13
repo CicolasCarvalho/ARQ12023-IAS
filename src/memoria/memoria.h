@@ -3,7 +3,7 @@
 
 #include "../defs.h"
 #define TAMANHO 4096
-#define TAMANHO_REAL 4096 * 5
+#define TAMANHO_REAL TAMANHO * 5
 #define TAMANHO_DADOS 500
 
 #define PALAVRA long

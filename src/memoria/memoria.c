@@ -26,11 +26,11 @@ PALAVRA memoria_ler(Memoria *mem, uint pos) {
     uint relative = pos * 5;
 
     PALAVRA pal = 
-        (PALAVRA)mem->dados[relative]     << 32 | 
-        (PALAVRA)mem->dados[relative + 1] << 24 |
-        (PALAVRA)mem->dados[relative + 2] << 16 |
-        (PALAVRA)mem->dados[relative + 3] << 8  |
-        (PALAVRA)mem->dados[relative + 4]       ;
+        ((PALAVRA)mem->dados[relative]    ) << 32 | 
+        ((PALAVRA)mem->dados[relative + 1]) << 24 |
+        ((PALAVRA)mem->dados[relative + 2]) << 16 |
+        ((PALAVRA)mem->dados[relative + 3]) << 8  |
+        ((PALAVRA)mem->dados[relative + 4])       ;
     
     return pal;
 }
