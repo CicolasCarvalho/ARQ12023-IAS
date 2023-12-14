@@ -1,5 +1,35 @@
 #include "./compilador.h"
 
+typedef enum {
+    OPERACAO,
+    NUMERO,
+
+    MEMORIA,
+    VIRGULA,
+    PIPE,
+    PAREN_OPEN,
+    PAREN_CLOSE,
+    MENOS,
+    DOIS_PONTOS,
+    VAZIO
+} SimbolosEnum;
+
+typedef struct {
+    SimbolosEnum tipo;
+    char valor[128];
+} Simbolo;
+
+typedef enum {
+    MULTIVALORADO,
+    UNICO
+} FuncaoMemoriaEnum;
+
+typedef struct {
+    FuncaoMemoriaEnum tipo;
+    int valor;
+    char posicao;
+} ResultadoParseMemoria;
+
 static Simbolo proximo_simbolo(char **linha);
 static Simbolo peek_simbolo(char *linha);
 static bool e_numero(char *str);
@@ -11,7 +41,7 @@ static long parse_numero(char **linha, int num_linha);
 static char parse_range(char **linha, int num_linha);
 static ResultadoParseMemoria parse_memoria(char **linha, int num_linha);
 static ResultadoParseMemoria except_memoria(char **linha, int num_linha, FuncaoMemoriaEnum tipo);
-static ResultadoParseMemoria except_memoria_pipe(char **linha, int num_linha);
+static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha);
 
 void compilar_para_arquivo(char *in, char *out) {
     FILE *f = fopen(in, "r");
@@ -69,9 +99,9 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
             Simbolo outro_argumento = peek_simbolo(linha);
             
             if (outro_argumento.tipo == PIPE) {
-                ResultadoParseMemoria memoria = except_memoria_pipe(&linha, num_linha);
+                ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
                 
-                adicionar_instrucao(mem, OP_LOAD_MENOS_PIPE, memoria.valor, num_linha);
+                adicionar_instrucao(mem, OP_LOAD_MENOS_MOD, memoria.valor, num_linha);
             } else if (outro_argumento.tipo == MEMORIA) {
                 ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
                 
@@ -80,9 +110,9 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
                 RAISE("Argumento do tipo '%i' nao e permitido em 'load -'", outro_argumento.tipo);
             }
         } else if (simbolo_a_seguir.tipo == PIPE) {
-            ResultadoParseMemoria memoria = except_memoria_pipe(&linha, num_linha);
+            ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
             
-            adicionar_instrucao(mem, OP_LOAD_PIPE, memoria.valor, num_linha);
+            adicionar_instrucao(mem, OP_LOAD_MOD, memoria.valor, num_linha);
         } else if (simbolo_a_seguir.tipo == MEMORIA) {
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
             
@@ -131,7 +161,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
 
             adicionar_instrucao(mem, OP_ADD, memoria.valor, num_linha);
         } else if (simbolo_a_seguir.tipo == PIPE) {
-            ResultadoParseMemoria memoria = except_memoria_pipe(&linha, num_linha);
+            ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
 
             adicionar_instrucao(mem, OP_ADD_MOD, memoria.valor, num_linha);    
         } else {
@@ -147,7 +177,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
 
             adicionar_instrucao(mem, OP_SUB, memoria.valor, num_linha);
         } else if (simbolo_a_seguir.tipo == PIPE) {
-            ResultadoParseMemoria memoria = except_memoria_pipe(&linha, num_linha);
+            ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
 
             adicionar_instrucao(mem, OP_SUB_MOD, memoria.valor, num_linha);    
         } else {
@@ -176,8 +206,7 @@ static void compilar_secao_dados(FILE *in, Memoria *mem) {
         if (fscanf(in, "%ld", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
 
         memoria_escrever(mem, i, dado);      
-    }
-    
+    }    
 }
 
 static void compilar_secao_programa(FILE *in, Memoria *mem) {
@@ -339,7 +368,7 @@ static ResultadoParseMemoria except_memoria(char **linha, int num_linha, FuncaoM
     return mem;
 }
 
-static ResultadoParseMemoria except_memoria_pipe(char **linha, int num_linha) {
+static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha) {
     except_proximo_simbolo(linha, PIPE, num_linha);
     ResultadoParseMemoria mem = except_memoria(linha, num_linha, UNICO);
     except_proximo_simbolo(linha, PIPE, num_linha);

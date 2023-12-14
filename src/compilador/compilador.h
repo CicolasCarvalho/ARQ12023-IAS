@@ -10,8 +10,8 @@
 #define OP_LOAD             0b00000001
 #define OP_STOR             0b00100001
 #define OP_LOAD_MENOS       0b00000010
-#define OP_LOAD_PIPE        0b00000011
-#define OP_LOAD_MENOS_PIPE  0b00000100
+#define OP_LOAD_MOD        0b00000011
+#define OP_LOAD_MENOS_MOD  0b00000100
 #define OP_LOAD_MQ          0b00001010
 #define OP_LOAD_MQ_M        0b00001001
 #define OP_JUMP_L           0b00001101
@@ -26,36 +26,6 @@
 #define OP_DIV              0b00001100
 #define OP_STOR_L           0b00010010
 #define OP_STOR_R           0b00010011
-
-typedef enum {
-    OPERACAO,
-    NUMERO,
-
-    MEMORIA,
-    VIRGULA,
-    PIPE,
-    PAREN_OPEN,
-    PAREN_CLOSE,
-    MENOS,
-    DOIS_PONTOS,
-    VAZIO
-} SimbolosEnum;
-
-typedef struct {
-    SimbolosEnum tipo;
-    char valor[128];
-} Simbolo;
-
-typedef enum {
-    MULTIVALORADO,
-    UNICO
-} FuncaoMemoriaEnum;
-
-typedef struct {
-    FuncaoMemoriaEnum tipo;
-    int valor;
-    char posicao;
-} ResultadoParseMemoria;
 
 void compilar_para_arquivo(char *in, char *out);
 Memoria *compilar_para_memoria(FILE *in);
