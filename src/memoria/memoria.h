@@ -7,7 +7,11 @@
 #define TAMANHO_DADOS 500
 
 #define PALAVRA long
+#define INSTRUCAO char
+#define ARGUMENTO short
 #define MASK 0xFFFFFFFFFF
+#define OP_MASK 0xFF
+#define ARGUMENTO_MASK 0xFFF
 
 typedef struct {
     // 4096 * 40
@@ -18,5 +22,6 @@ typedef struct {
 Memoria *memoria_criar(void);
 void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal);
 PALAVRA memoria_ler(Memoria *mem, uint pos);
+void adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint pos);
 
 #endif
