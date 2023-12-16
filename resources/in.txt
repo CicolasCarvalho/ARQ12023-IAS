@@ -498,23 +498,23 @@
 0
 0
 load MQ
-load MQ, M(0)
-stor M(0)
-load M(0)
-load -M(0)
-load |M(0)|
-load -|M(0)|
-jump M(0, 0:19)
-jump M(0, 20:39)
-jump+ M(0, 0:19)
-jump+ M(0, 20:39)
-add M(0)
-add |M(0)|
-sub M(0)
-sub |M(0)|
-mul M(0)
-div M(0)
+load MQ, M(4095)
+stor M(1)
+load M(1)
+load -M(1)
+load |M(1)|
+load -|M(1)|
+jump M(1, 0:19)
+jump M(1, 20:39)
+jump+ M(1, 0:19)
+jump+ M(1, 20:39)
+add M(1)
+add |M(1)|
+sub M(1)
+sub |M(1)|
+mul M(1)
+div M(1)
 lsh
 rsh
-stor M(0, 8:19)
-stor M(0, 28:39)
+stor M(1, 8:19)
+stor M(1, 28:39)

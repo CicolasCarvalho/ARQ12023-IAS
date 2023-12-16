@@ -1,7 +1,7 @@
 #include "./memoria.h"
 
 Memoria *memoria_criar(void) {
-    Memoria *mem = malloc(sizeof(*mem));
+    Memoria *mem = malloc(sizeof(Memoria));
 
     memset(mem->dados, 0b00000000, TAMANHO_REAL);
 
@@ -17,7 +17,7 @@ void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal) {
     mem->dados[relativo + 1] = (pal & 0x00FF000000) >> 24; 
     mem->dados[relativo + 2] = (pal & 0x0000FF0000) >> 16; 
     mem->dados[relativo + 3] = (pal & 0x000000FF00) >>  8; 
-    mem->dados[relativo + 4] =  pal & 0x00000000FF       ;
+    mem->dados[relativo + 4] = (pal & 0x00000000FF)      ;
 }
 
 PALAVRA memoria_ler(Memoria *mem, uint pos) {
@@ -41,7 +41,7 @@ void adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint pos) {
     PALAVRA pal = memoria_ler(mem, pos);
     PALAVRA operacao_argumento = (PALAVRA)op << 12 | (PALAVRA)arg;
     
-    pal = pal | (operacao_argumento << ((contador_operacoes % 2) * 20));
+    pal = pal | (operacao_argumento << ((contador_operacoes % 2 == 0) * 20));
     
     memoria_escrever(mem, pos, pal);
     contador_operacoes++;

@@ -10,8 +10,8 @@
 #define OP_LOAD             0b00000001
 #define OP_STOR             0b00100001
 #define OP_LOAD_MENOS       0b00000010
-#define OP_LOAD_MOD        0b00000011
-#define OP_LOAD_MENOS_MOD  0b00000100
+#define OP_LOAD_MOD         0b00000011
+#define OP_LOAD_MENOS_MOD   0b00000100
 #define OP_LOAD_MQ          0b00001010
 #define OP_LOAD_MQ_M        0b00001001
 #define OP_JUMP_L           0b00001101

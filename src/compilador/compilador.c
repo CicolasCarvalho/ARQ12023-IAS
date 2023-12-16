@@ -69,6 +69,7 @@ Memoria *compilar_para_memoria(FILE *in) {
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
+    num_linha = (num_linha - TAMANHO_DADOS) / 2 + TAMANHO_DADOS;
 
     if (strcmp(nome_operacao, "lsh") == 0 || strcmp(nome_operacao, "rsh") == 0) {
         if (nome_operacao[0] == 'l')
@@ -139,7 +140,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
         
         if (memoria.posicao == 'l')
-            adicionar_instrucao(mem, OP_JUMP_R, memoria.valor, num_linha);
+            adicionar_instrucao(mem, OP_JUMP_L, memoria.valor, num_linha);
         else
             adicionar_instrucao(mem, OP_JUMP_R, memoria.valor, num_linha);
     }
@@ -148,7 +149,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
         
         if (memoria.posicao == 'l')
-            adicionar_instrucao(mem, OP_JUMP_COND_R, memoria.valor, num_linha);
+            adicionar_instrucao(mem, OP_JUMP_COND_L, memoria.valor, num_linha);
         else
             adicionar_instrucao(mem, OP_JUMP_COND_R, memoria.valor, num_linha);
     }
@@ -202,10 +203,10 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
 
 static void compilar_secao_dados(FILE *in, Memoria *mem) {
     for (int i = 0; i < TAMANHO_DADOS; i++) {
-        long dado = 0;
-        if (fscanf(in, "%ld", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
+        PALAVRA dado = 0;
+        if (fscanf(in, "%llu", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
 
-        memoria_escrever(mem, i, dado);      
+        memoria_escrever(mem, i, dado);
     }    
 }
 
@@ -219,16 +220,15 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
         if (c == '\n') {
             compilar_linha(op, mem, i++);
             op_len = 0;
-            op[op_len] = '\0';
         } else if (c == ' ') {
             if (op_len > 0 && op[op_len - 1] != ' ') {
                 op[op_len++] = ' ';
-                op[op_len] = '\0';
             }
         } else {
             op[op_len++] = c;
-            op[op_len] = '\0';
         }
+
+        op[op_len] = '\0';
     }
 }
 

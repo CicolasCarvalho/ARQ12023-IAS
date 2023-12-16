@@ -6,8 +6,8 @@
 #define TAMANHO_REAL TAMANHO * 5
 #define TAMANHO_DADOS 500
 
-#define PALAVRA long
-#define INSTRUCAO char
+#define PALAVRA unsigned long long
+#define INSTRUCAO unsigned char
 #define ARGUMENTO short
 #define MASK 0xFFFFFFFFFF
 #define OP_MASK 0xFF
@@ -16,7 +16,7 @@
 typedef struct {
     // 4096 * 40
     // 4096 * 5 * 8
-    char dados[TAMANHO_REAL];
+    unsigned char dados[TAMANHO_REAL];
 } Memoria;
 
 Memoria *memoria_criar(void);
