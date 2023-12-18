@@ -26,6 +26,7 @@
 #define OP_DIV              0b00001100
 #define OP_STOR_L           0b00010010
 #define OP_STOR_R           0b00010011
+#define OP_EXIT             0b11111111
 
 void compilar_para_arquivo(char *in, char *out);
 Memoria *compilar_para_memoria(FILE *in);

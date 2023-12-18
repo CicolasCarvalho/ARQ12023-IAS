@@ -9,9 +9,9 @@
 #define PALAVRA unsigned long long
 #define INSTRUCAO unsigned char
 #define ARGUMENTO short
-#define MASK 0xFFFFFFFFFF
-#define OP_MASK 0xFF
-#define ARGUMENTO_MASK 0xFFF
+#define MASK 0xFFFFFFFFFFll
+#define OP_MASK 0xFFll
+#define ARGUMENTO_MASK 0xFFFll
 
 typedef struct {
     // 4096 * 40

@@ -43,6 +43,8 @@ static ResultadoParseMemoria parse_memoria(char **linha, int num_linha);
 static ResultadoParseMemoria except_memoria(char **linha, int num_linha, FuncaoMemoriaEnum tipo);
 static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha);
 
+//-Funcoes-------------------------------------------------------------------------------------------------------------------
+
 void compilar_para_arquivo(char *in, char *out) {
     FILE *f = fopen(in, "r");
     if (!f) RAISE("Arquivo '%s' não encontrado", in);
@@ -71,11 +73,13 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
     num_linha = (num_linha - TAMANHO_DADOS) / 2 + TAMANHO_DADOS;
 
-    if (strcmp(nome_operacao, "lsh") == 0 || strcmp(nome_operacao, "rsh") == 0) {
+    if (strcmp(nome_operacao, "lsh") == 0 || strcmp(nome_operacao, "rsh") == 0 || strcmp(nome_operacao, "exit") == 0) {
         if (nome_operacao[0] == 'l')
             adicionar_instrucao(mem, OP_LSH, 0, num_linha);
-        else
+        else if (nome_operacao[0] == 'r')
             adicionar_instrucao(mem, OP_RSH, 0, num_linha);
+        else
+            adicionar_instrucao(mem, OP_EXIT, 0, num_linha);
     }
 
     if (strcmp(nome_operacao, "load") == 0) {
@@ -203,8 +207,12 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
 
 static void compilar_secao_dados(FILE *in, Memoria *mem) {
     for (int i = 0; i < TAMANHO_DADOS; i++) {
-        PALAVRA dado = 0;
-        if (fscanf(in, "%llu", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
+        long long dado = 0;
+        if (fscanf(in, "%lli", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
+
+        bool negativo = dado < 0;
+        dado &= (MASK >> 1);
+        dado |= (negativo ? (1ll << 39): 0);
 
         memoria_escrever(mem, i, dado);
     }    
@@ -215,9 +223,14 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
     int op_len = 0;
     char c = '\0';
     int i = TAMANHO_DADOS;
+    bool fim = false;
 
-    while ((c = fgetc(in)) != EOF) {
-        if (c == '\n') {
+    while (!fim) {
+        c = fgetc(in);
+        
+        if (c == '\n' || c == EOF) {
+            if (c == EOF) fim = true;
+
             compilar_linha(op, mem, i++);
             op_len = 0;
         } else if (c == ' ') {
