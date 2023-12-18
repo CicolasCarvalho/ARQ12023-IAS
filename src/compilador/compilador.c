@@ -11,7 +11,8 @@ typedef enum {
     PAREN_CLOSE,
     MENOS,
     DOIS_PONTOS,
-    VAZIO
+    VAZIO,
+    MAIS
 } SimbolosEnum;
 
 typedef struct {
@@ -141,21 +142,28 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     }
 
     if (strcmp(nome_operacao, "jump") == 0) {
-        ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
-        
-        if (memoria.posicao == 'l')
-            adicionar_instrucao(mem, OP_JUMP_L, memoria.valor, num_linha);
-        else
-            adicionar_instrucao(mem, OP_JUMP_R, memoria.valor, num_linha);
+        Simbolo simbolo_a_seguir = peek_simbolo(linha);
+
+        if (simbolo_a_seguir.tipo == MAIS) {
+            proximo_simbolo(&linha);
+            
+            ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
+            
+            if (memoria.posicao == 'l')
+                adicionar_instrucao(mem, OP_JUMP_COND_L, memoria.valor, num_linha);
+            else
+                adicionar_instrucao(mem, OP_JUMP_COND_R, memoria.valor, num_linha);
+        } else {
+            ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
+            
+            if (memoria.posicao == 'l')
+                adicionar_instrucao(mem, OP_JUMP_L, memoria.valor, num_linha);
+            else
+                adicionar_instrucao(mem, OP_JUMP_R, memoria.valor, num_linha);
+        }
     }
 
     if (strcmp(nome_operacao, "jump+") == 0) {
-        ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
-        
-        if (memoria.posicao == 'l')
-            adicionar_instrucao(mem, OP_JUMP_COND_L, memoria.valor, num_linha);
-        else
-            adicionar_instrucao(mem, OP_JUMP_COND_R, memoria.valor, num_linha);
     }
 
     if (strcmp(nome_operacao, "add") == 0) {
@@ -260,7 +268,8 @@ static Simbolo proximo_simbolo(char **linha) {
             **linha != '('  &&
             **linha != ')'  &&
             **linha != '-'  &&
-            **linha != ':'  ; 
+            **linha != ':'  &&
+            **linha != '+'  ; 
             (*linha)++
         ) {
         s.valor[i] = **linha;
@@ -287,6 +296,9 @@ static Simbolo proximo_simbolo(char **linha) {
                 break;
             case ':':
                 s.tipo = DOIS_PONTOS;
+                break;
+            case '+':
+                s.tipo = MAIS;
                 break;
             default:
                 s.tipo = VAZIO;

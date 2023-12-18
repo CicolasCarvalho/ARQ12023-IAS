@@ -501,9 +501,9 @@ load MQ
 load MQ, M(4095)
 stor M(1)
 load M(1)
-load -M(1)
+load- M(1)
 load |M(1)|
-load -|M(1)|
+load- |M(1)|
 jump M(1, 0:19)
 jump M(1, 20:39)
 jump+ M(1, 0:19)
