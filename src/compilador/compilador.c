@@ -44,6 +44,8 @@ static ResultadoParseMemoria parse_memoria(char **linha, int num_linha);
 static ResultadoParseMemoria except_memoria(char **linha, int num_linha, FuncaoMemoriaEnum tipo);
 static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha);
 
+static char charhigh(char c);
+
 //-Funcoes-------------------------------------------------------------------------------------------------------------------
 
 void compilar_para_arquivo(char *in, char *out) {
@@ -74,16 +76,16 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
     num_linha = (num_linha - TAMANHO_DADOS) / 2 + TAMANHO_DADOS;
 
-    if (strcmp(nome_operacao, "lsh") == 0 || strcmp(nome_operacao, "rsh") == 0 || strcmp(nome_operacao, "exit") == 0) {
-        if (nome_operacao[0] == 'l')
+    if (strcmp(nome_operacao, "LSH") == 0 || strcmp(nome_operacao, "RSH") == 0 || strcmp(nome_operacao, "EXIT") == 0) {
+        if (nome_operacao[0] == 'L')
             adicionar_instrucao(mem, OP_LSH, 0, num_linha);
-        else if (nome_operacao[0] == 'r')
+        else if (nome_operacao[0] == 'R')
             adicionar_instrucao(mem, OP_RSH, 0, num_linha);
         else
             adicionar_instrucao(mem, OP_EXIT, 0, num_linha);
     }
 
-    if (strcmp(nome_operacao, "load") == 0) {
+    if (strcmp(nome_operacao, "LOAD") == 0) {
         Simbolo simbolo_a_seguir = peek_simbolo(linha);
 
         if (simbolo_a_seguir.tipo == OPERACAO && strcmp(simbolo_a_seguir.valor, "MQ") == 0) {
@@ -126,7 +128,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         }
     }
 
-    if (strcmp(nome_operacao, "stor") == 0) {
+    if (strcmp(nome_operacao, "STOR") == 0) {
         ResultadoParseMemoria memoria = parse_memoria(&linha, num_linha);
             
         if (memoria.tipo == MULTIVALORADO) {
@@ -141,12 +143,12 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         }
     }
 
-    if (strcmp(nome_operacao, "jump") == 0) {
+    if (strcmp(nome_operacao, "JUMP") == 0) {
         Simbolo simbolo_a_seguir = peek_simbolo(linha);
 
         if (simbolo_a_seguir.tipo == MAIS) {
             proximo_simbolo(&linha);
-            
+
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
             
             if (memoria.posicao == 'l')
@@ -163,10 +165,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         }
     }
 
-    if (strcmp(nome_operacao, "jump+") == 0) {
-    }
-
-    if (strcmp(nome_operacao, "add") == 0) {
+    if (strcmp(nome_operacao, "ADD") == 0) {
         Simbolo simbolo_a_seguir = peek_simbolo(linha);
 
         if (simbolo_a_seguir.tipo == MEMORIA) {
@@ -182,7 +181,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         }
     }
 
-    if (strcmp(nome_operacao, "sub") == 0) {
+    if (strcmp(nome_operacao, "SUB") == 0) {
         Simbolo simbolo_a_seguir = peek_simbolo(linha);
 
         if (simbolo_a_seguir.tipo == MEMORIA) {
@@ -198,13 +197,13 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         }
     }
 
-    if (strcmp(nome_operacao, "mul") == 0) {
+    if (strcmp(nome_operacao, "MUL") == 0) {
         ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
             
         adicionar_instrucao(mem, OP_MUL, memoria.valor, num_linha);
     }
 
-    if (strcmp(nome_operacao, "div") == 0) {
+    if (strcmp(nome_operacao, "DIV") == 0) {
         ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
             
         adicionar_instrucao(mem, OP_DIV, memoria.valor, num_linha);
@@ -234,7 +233,7 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
     bool fim = false;
 
     while (!fim) {
-        c = fgetc(in);
+        c = charhigh(fgetc(in));
         
         if (c == '\n' || c == EOF) {
             if (c == EOF) fim = true;
@@ -399,4 +398,8 @@ static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha) {
     except_proximo_simbolo(linha, PIPE, num_linha);
 
     return mem;
+}
+
+static char charhigh(char c) {
+    return c >= 'a' && c <= 'z' ? c - 32 : c;  
 }
