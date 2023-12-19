@@ -1,5 +1,5 @@
-#ifndef COMPILADOR_H_
-#define COMPILADOR_H_
+#ifndef TRADUTOR_H_
+#define TRADUTOR_H_
 
 #include "../defs.h"
 #include "../memoria/memoria.h"

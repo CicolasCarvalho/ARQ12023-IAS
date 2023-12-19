@@ -6,7 +6,7 @@ SRC_DIR := src
 BUILD_DIR := build
 
 # Source files
-SRC := ./src/main.c ./src/compilador/compilador.c ./src/memoria/memoria.c ./src/decoder/decoder.c
+SRC := ./src/main.c ./src/tradutor/tradutor.c ./src/memoria/memoria.c ./src/decoder/decoder.c
 
 # Object files
 OBJ := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
@@ -15,7 +15,7 @@ OBJ := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
 CFLAGS := -Wall -Wextra
 
 # Build target
-TARGET := $(BUILD_DIR)/main
+TARGET := $(BUILD_DIR)/ias
 
 # Default target
 all: $(TARGET)

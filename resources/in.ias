@@ -1,0 +1,26 @@
+-10
+2
+3
+4
+-10
+load MQ
+load MQ, M(4095)
+stor M(1)
+load M(1)
+load- M(1)
+load |M(1)|
+load- |M(1)|
+jump M(1, 0:19)
+jump M(1, 20:39)
+jump+ M(1, 0:19)
+jump+ M(1, 20:39)
+add M(1)
+add |M(1)|
+sub M(1)
+sub |M(1)|
+mul M(1)
+div M(1)
+lsh
+rsh
+stor M(1, 8:19)
+stor M(1, 28:39)

@@ -1,4 +1,4 @@
-#include "./compilador.h"
+#include "./tradutor.h"
 
 typedef enum {
     OPERACAO,
@@ -45,6 +45,7 @@ static ResultadoParseMemoria except_memoria(char **linha, int num_linha, FuncaoM
 static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha);
 
 static char charhigh(char c);
+static char fpeek(FILE *f);
 
 //-Funcoes-------------------------------------------------------------------------------------------------------------------
 
@@ -71,6 +72,49 @@ Memoria *compilar_para_memoria(FILE *in) {
 }
 
 //-Funcoes estaticas---------------------------------------------------------------------------------------------------------
+
+static void compilar_secao_dados(FILE *in, Memoria *mem) {
+    for (int i = 0; i < TAMANHO_DADOS; i++) {
+        long long dado = 0;
+        if (fscanf(in, "%lli", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
+        
+        bool negativo = dado < 0;
+        dado = llabs(dado);
+        dado &= (MASK >> 1);
+        dado |= (negativo ? (1ll << 39): 0);
+
+        memoria_escrever(mem, i, dado);
+
+        if (fpeek(in) != '\n') break;
+    }    
+}
+
+static void compilar_secao_programa(FILE *in, Memoria *mem) {
+    char op[128] = "\0";
+    int op_len = 0;
+    char c = '\0';
+    int i = TAMANHO_DADOS;
+    bool fim = false;
+
+    while (!fim) {
+        c = charhigh(fgetc(in));
+        
+        if (c == '\n' || c == EOF) {
+            if (c == EOF) fim = true;
+
+            compilar_linha(op, mem, i++);
+            op_len = 0;
+        } else if (c == ' ') {
+            if (op_len > 0 && op[op_len - 1] != ' ') {
+                op[op_len++] = ' ';
+            }
+        } else {
+            op[op_len++] = c;
+        }
+
+        op[op_len] = '\0';
+    }
+}
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
@@ -211,46 +255,6 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
 
     except_proximo_simbolo(&linha, VAZIO, num_linha);
 }    
-
-static void compilar_secao_dados(FILE *in, Memoria *mem) {
-    for (int i = 0; i < TAMANHO_DADOS; i++) {
-        long long dado = 0;
-        if (fscanf(in, "%lli", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
-
-        bool negativo = dado < 0;
-        dado &= (MASK >> 1);
-        dado |= (negativo ? (1ll << 39): 0);
-
-        memoria_escrever(mem, i, dado);
-    }    
-}
-
-static void compilar_secao_programa(FILE *in, Memoria *mem) {
-    char op[128] = "\0";
-    int op_len = 0;
-    char c = '\0';
-    int i = TAMANHO_DADOS;
-    bool fim = false;
-
-    while (!fim) {
-        c = charhigh(fgetc(in));
-        
-        if (c == '\n' || c == EOF) {
-            if (c == EOF) fim = true;
-
-            compilar_linha(op, mem, i++);
-            op_len = 0;
-        } else if (c == ' ') {
-            if (op_len > 0 && op[op_len - 1] != ' ') {
-                op[op_len++] = ' ';
-            }
-        } else {
-            op[op_len++] = c;
-        }
-
-        op[op_len] = '\0';
-    }
-}
 
 static Simbolo proximo_simbolo(char **linha) {
     Simbolo s = {0};
@@ -402,4 +406,13 @@ static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha) {
 
 static char charhigh(char c) {
     return c >= 'a' && c <= 'z' ? c - 32 : c;  
+}
+
+static char fpeek(FILE *f) {
+    char c;
+
+    c = fgetc(f);
+    ungetc(c, f);
+
+    return c;
 }
