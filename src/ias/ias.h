@@ -12,7 +12,7 @@ typedef struct {
 
 typedef struct {
     IASConfig config;
-    CPU cpu;
+    CPU *cpu;
     Memoria *memoria;
 } IAS;
 

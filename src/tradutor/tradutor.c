@@ -35,8 +35,9 @@ static Simbolo proximo_simbolo(char **linha);
 static Simbolo peek_simbolo(char *linha);
 static bool e_numero(char *str);
 static Simbolo except_proximo_simbolo(char **linha, SimbolosEnum tipo, int num_linha);
+static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) ;
 static void compilar_linha(char *linha, Memoria *mem, int num_linha);
-static void compilar_secao_configuracao(FILE *in, IAS *ias);
+static void compilar_secao_configuracao(FILE *in, CPU *cpu);
 static void compilar_secao_dados(FILE *in, Memoria *mem);
 static void compilar_secao_programa(FILE *in, Memoria *mem);
 static long parse_numero(char **linha, int num_linha);
@@ -68,16 +69,35 @@ void compilar_para_arquivo(char *in, char *out, int tamanho, int tamanho_dados) 
 void compilar_para_memoria(FILE *in, Memoria *mem) {
     if (mem == NULL) RAISE("Memoria não pode ser nula");
 
-    compilar_secao_configuracao(in, NULL);
     compilar_secao_dados(in, mem);
     compilar_secao_programa(in, mem);
 }
 
+void compilar_para_IAS(FILE *in, IAS *ias) {
+    if (ias == NULL) RAISE("IAS não pode ser nulo");
+    if (ias->memoria == NULL) RAISE("Memoria não pode ser nula");
+    if (ias->cpu == NULL) RAISE("cpu não pode ser nula");
+
+    compilar_secao_configuracao(in, ias->cpu);
+    compilar_secao_dados(in, ias->memoria);
+    compilar_secao_programa(in, ias->memoria);
+}
+
 //-Funcoes estaticas---------------------------------------------------------------------------------------------------------
 
-static void compilar_secao_configuracao(FILE *in, IAS *ias) {
-    for (int i = 0; i < NUM_INSTRUCOES; i++) {
+static void compilar_secao_configuracao(FILE *in, CPU *cpu) {
+    char linha[128] = "\0";
+    int n = 0;
+
+    while (n < NUM_INSTRUCOES) {
+        linha[0] = fpeek(in);
+        linha[1] = '\0';
+        if (e_numero(linha)) break;
         
+        fgets(linha, 128, in);
+        compilar_linha_configuracao(linha, cpu, n);
+
+        n++;
     }
 }
 
@@ -98,7 +118,7 @@ static void compilar_secao_dados(FILE *in, Memoria *mem) {
 }
 
 static void compilar_secao_programa(FILE *in, Memoria *mem) {
-    char op[128] = "\0";
+    char linha[128] = "\0";
     int op_len = 0;
     char c = '\0';
     int i = mem->tamanho_dados;
@@ -110,22 +130,28 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
         if (c == '\n' || c == EOF) {
             if (c == EOF) fim = true;
 
-            compilar_linha(op, mem, i++);
+            compilar_linha(linha, mem, i++);
             op_len = 0;
         } else if (c == ' ') {
-            if (op_len > 0 && op[op_len - 1] != ' ') {
-                op[op_len++] = ' ';
+            if (op_len > 0 && linha[op_len - 1] != ' ') {
+                linha[op_len++] = ' ';
             }
         } else {
-            op[op_len++] = c;
+            linha[op_len++] = c;
         }
 
-        op[op_len] = '\0';
+        linha[op_len] = '\0';
     }
 }
 
-static void compilar_linha_configuracao(char *linha, IAS *ias, int num_linha) {
+static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
+    char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;
+    except_proximo_simbolo(&linha, DOIS_PONTOS, num_linha);
+    long num = parse_numero(&linha, num_linha);
 
+    if (strcmp(nome_operacao, "ADD") == 0) {
+        CPU_inserir_configuracao(linha, OP_ADD, num);
+    }
 }
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
@@ -134,11 +160,11 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
 
     if (strcmp(nome_operacao, "LSH") == 0 || strcmp(nome_operacao, "RSH") == 0 || strcmp(nome_operacao, "EXIT") == 0) {
         if (nome_operacao[0] == 'L')
-            adicionar_instrucao(mem, OP_LSH, 0, num_linha);
+            memoria_adicionar_instrucao(mem, OP_LSH, 0, num_linha);
         else if (nome_operacao[0] == 'R')
-            adicionar_instrucao(mem, OP_RSH, 0, num_linha);
+            memoria_adicionar_instrucao(mem, OP_RSH, 0, num_linha);
         else
-            adicionar_instrucao(mem, OP_EXIT, 0, num_linha);
+            memoria_adicionar_instrucao(mem, OP_EXIT, 0, num_linha);
     }
 
     if (strcmp(nome_operacao, "LOAD") == 0) {
@@ -151,9 +177,9 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
             if (outro_argumento.tipo == VIRGULA) {
                 ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
 
-                adicionar_instrucao(mem, OP_LOAD_MQ_M, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_LOAD_MQ_M, memoria.valor, num_linha);
             } else if (outro_argumento.tipo == VAZIO) {    
-                adicionar_instrucao(mem, OP_LOAD_MQ, 0, num_linha);
+                memoria_adicionar_instrucao(mem, OP_LOAD_MQ, 0, num_linha);
             } else {
                 RAISE("Argumento do tipo '%i' nao e permitido em 'load mq'", outro_argumento.tipo);
             }
@@ -165,22 +191,22 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
             if (outro_argumento.tipo == PIPE) {
                 ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
                 
-                adicionar_instrucao(mem, OP_LOAD_MENOS_MOD, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_LOAD_MENOS_MOD, memoria.valor, num_linha);
             } else if (outro_argumento.tipo == MEMORIA) {
                 ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
                 
-                adicionar_instrucao(mem, OP_LOAD_MENOS, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_LOAD_MENOS, memoria.valor, num_linha);
             } else {
                 RAISE("Argumento do tipo '%i' nao e permitido em 'load -'", outro_argumento.tipo);
             }
         } else if (simbolo_a_seguir.tipo == PIPE) {
             ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
             
-            adicionar_instrucao(mem, OP_LOAD_MOD, memoria.valor, num_linha);
+            memoria_adicionar_instrucao(mem, OP_LOAD_MOD, memoria.valor, num_linha);
         } else if (simbolo_a_seguir.tipo == MEMORIA) {
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
             
-            adicionar_instrucao(mem, OP_LOAD, memoria.valor, num_linha);
+            memoria_adicionar_instrucao(mem, OP_LOAD, memoria.valor, num_linha);
         }
     }
 
@@ -189,13 +215,13 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
             
         if (memoria.tipo == MULTIVALORADO) {
             if (memoria.posicao == 'L') 
-                adicionar_instrucao(mem, OP_STOR_L, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_STOR_L, memoria.valor, num_linha);
             else if (memoria.posicao == 'R')
-                adicionar_instrucao(mem, OP_STOR_R, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_STOR_R, memoria.valor, num_linha);
             else
                 RAISE("posicionamento invalido para STOR");
         } else {
-            adicionar_instrucao(mem, OP_STOR, memoria.valor, num_linha);
+            memoria_adicionar_instrucao(mem, OP_STOR, memoria.valor, num_linha);
         }
     }
 
@@ -208,16 +234,16 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
             
             if (memoria.posicao == 'l')
-                adicionar_instrucao(mem, OP_JUMP_COND_L, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_JUMP_COND_L, memoria.valor, num_linha);
             else
-                adicionar_instrucao(mem, OP_JUMP_COND_R, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_JUMP_COND_R, memoria.valor, num_linha);
         } else {
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, MULTIVALORADO);
             
             if (memoria.posicao == 'l')
-                adicionar_instrucao(mem, OP_JUMP_L, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_JUMP_L, memoria.valor, num_linha);
             else
-                adicionar_instrucao(mem, OP_JUMP_R, memoria.valor, num_linha);
+                memoria_adicionar_instrucao(mem, OP_JUMP_R, memoria.valor, num_linha);
         }
     }
 
@@ -227,11 +253,11 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         if (simbolo_a_seguir.tipo == MEMORIA) {
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
 
-            adicionar_instrucao(mem, OP_ADD, memoria.valor, num_linha);
+            memoria_adicionar_instrucao(mem, OP_ADD, memoria.valor, num_linha);
         } else if (simbolo_a_seguir.tipo == PIPE) {
             ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
 
-            adicionar_instrucao(mem, OP_ADD_MOD, memoria.valor, num_linha);    
+            memoria_adicionar_instrucao(mem, OP_ADD_MOD, memoria.valor, num_linha);    
         } else {
             RAISE("Argumento do tipo '%i' nao e permitido em 'add'", simbolo_a_seguir.tipo);
         }
@@ -243,11 +269,11 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         if (simbolo_a_seguir.tipo == MEMORIA) {
             ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
 
-            adicionar_instrucao(mem, OP_SUB, memoria.valor, num_linha);
+            memoria_adicionar_instrucao(mem, OP_SUB, memoria.valor, num_linha);
         } else if (simbolo_a_seguir.tipo == PIPE) {
             ResultadoParseMemoria memoria = except_memoria_MOD(&linha, num_linha);
 
-            adicionar_instrucao(mem, OP_SUB_MOD, memoria.valor, num_linha);    
+            memoria_adicionar_instrucao(mem, OP_SUB_MOD, memoria.valor, num_linha);    
         } else {
             RAISE("Argumento do tipo '%i' nao e permitido em 'add'", simbolo_a_seguir.tipo);
         }
@@ -256,13 +282,13 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     if (strcmp(nome_operacao, "MUL") == 0) {
         ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
             
-        adicionar_instrucao(mem, OP_MUL, memoria.valor, num_linha);
+        memoria_adicionar_instrucao(mem, OP_MUL, memoria.valor, num_linha);
     }
 
     if (strcmp(nome_operacao, "DIV") == 0) {
         ResultadoParseMemoria memoria = except_memoria(&linha, num_linha, UNICO);
             
-        adicionar_instrucao(mem, OP_DIV, memoria.valor, num_linha);
+        memoria_adicionar_instrucao(mem, OP_DIV, memoria.valor, num_linha);
     }
 
     except_proximo_simbolo(&linha, VAZIO, num_linha);

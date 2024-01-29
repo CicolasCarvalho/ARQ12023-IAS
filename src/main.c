@@ -10,6 +10,9 @@ int main(int argc, char **argv) {
     if (strcmp(argv[1], "-p") == 0) {
         char *in = argv[2];
 
+        FILE *f = fopen(in, "r");
+        if (!f) RAISE("Arquivo '%s' não encontrado", in);
+
         IAS *ias = IAS_criar();
 
         if (strcmp(argv[3], "-i") != 0) RAISE("comando não receonhecido '%s'", argv[3]);
@@ -18,7 +21,7 @@ int main(int argc, char **argv) {
         Memoria *mem = memoria_criar(TAMANHO, tamanho_dados);
         ias->memoria = mem;
 
-        compilar_para_memoria(in, mem);
+        compilar_para_memoria(f, mem);
         // IAS bootloader
     } else if (strcmp(argv[1], "-t") == 0) {
         char *in = argv[2];

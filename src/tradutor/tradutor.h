@@ -9,5 +9,6 @@
 
 void compilar_para_arquivo(char *in, char *out, int tamanho, int tamanho_dados);
 void compilar_para_memoria(FILE *in, Memoria *mem);
+void compilar_para_IAS(FILE *in, IAS *ias);
 
 #endif

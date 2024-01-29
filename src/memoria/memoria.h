@@ -16,6 +16,6 @@ typedef struct {
 Memoria *memoria_criar(int tamanho, int tamanho_dados);
 void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal);
 PALAVRA memoria_ler(Memoria *mem, uint pos);
-void adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint pos);
+void memoria_adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint pos);
 
 #endif
