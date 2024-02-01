@@ -1,5 +1,10 @@
 #include "./tradutor.h"
 
+#define MOD_PIPE 0b0001
+#define MOD_MENOS 0b0010
+#define MOD_MQ 0b0100
+#define MOD_MAIS 0b1000
+
 typedef enum {
     OPERACAO,
     NUMERO,
@@ -48,6 +53,7 @@ static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha);
 
 static char charhigh(char c);
 static char fpeek(FILE *f);
+static char *simtoa(SimbolosEnum simb);
 
 //-Funcoes-------------------------------------------------------------------------------------------------------------------
 
@@ -88,16 +94,31 @@ void compilar_para_IAS(FILE *in, IAS *ias) {
 static void compilar_secao_configuracao(FILE *in, CPU *cpu) {
     char linha[128] = "\0";
     int n = 0;
+    int op_len = 0;
+    char c = '\0';
+    bool fim = false;
 
-    while (n < NUM_INSTRUCOES) {
-        linha[0] = fpeek(in);
-        linha[1] = '\0';
-        if (e_numero(linha)) break;
+    while (!fim && n < NUM_INSTRUCOES) {
+        c = charhigh(fgetc(in));
         
-        fgets(linha, 128, in);
-        compilar_linha_configuracao(linha, cpu, n);
+        if (c == '\n' || c == EOF) {
+            fim = c == EOF;
 
-        n++;
+            compilar_linha_configuracao(linha, cpu, n++);
+            op_len = 0;
+
+            linha[0] = fpeek(in);
+            linha[1] = '\0';
+            if (e_numero(linha)) break;
+        } else if (c == ' ') {
+            if (op_len > 0 && linha[op_len - 1] != ' ') {
+                linha[op_len++] = ' ';
+            }
+        } else {
+            linha[op_len++] = c;
+        }
+
+        linha[op_len] = '\0';
     }
 }
 
@@ -128,7 +149,7 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
         c = charhigh(fgetc(in));
         
         if (c == '\n' || c == EOF) {
-            if (c == EOF) fim = true;
+            fim = c == EOF;
 
             compilar_linha(linha, mem, i++);
             op_len = 0;
@@ -146,18 +167,96 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
 
 static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;
+    short modificadores = 0;
+    Simbolo simbolo_a_seguir = peek_simbolo(linha);
+
+    if (simbolo_a_seguir.tipo == OPERACAO && strcmp(simbolo_a_seguir.valor, "MQ") == 0) {
+        proximo_simbolo(&linha);
+        modificadores |= MOD_MQ;
+    } else if (simbolo_a_seguir.tipo == MAIS) {
+        proximo_simbolo(&linha);
+        modificadores |= MOD_MAIS;
+    } else {
+        if (simbolo_a_seguir.tipo == PIPE) {
+            proximo_simbolo(&linha);
+            modificadores |= MOD_PIPE;
+            simbolo_a_seguir = peek_simbolo(linha);
+        }
+
+        if (simbolo_a_seguir.tipo == MENOS) {
+            proximo_simbolo(&linha);
+            modificadores |= MOD_MENOS;
+        }
+    }
+
     except_proximo_simbolo(&linha, DOIS_PONTOS, num_linha);
     long num = parse_numero(&linha, num_linha);
 
-    if (strcmp(nome_operacao, "ADD") == 0) {
-        CPU_inserir_configuracao(linha, OP_ADD, num);
+    if (strcmp(nome_operacao, "LSH") == 0 && modificadores == 0b0000) {
+        CPU_inserir_tempo_operacao(cpu, OP_LSH, num);
+    
+    } else if (strcmp(nome_operacao, "RSH") == 0 && modificadores == 0b0000) {
+        CPU_inserir_tempo_operacao(cpu, OP_RSH, num);
+    
+    } else if (strcmp(nome_operacao, "LOAD") == 0 && (modificadores == 0b0000 || modificadores & (MOD_MENOS | MOD_PIPE | MOD_MQ))) {
+        if (modificadores & MOD_PIPE && modificadores & MOD_MENOS) 
+            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MENOS_MOD, num);
+        else if (modificadores & MOD_PIPE)
+            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MOD, num);
+        else if (modificadores & MOD_MENOS)
+            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MENOS, num);
+        else if (modificadores == MOD_MQ) {
+            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MQ, num);
+            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MQ_M, num);
+        }
+        else if (modificadores == 0)
+            CPU_inserir_tempo_operacao(cpu, OP_LOAD, num);
+
+    } else if (strcmp(nome_operacao, "STOR") == 0 && modificadores == 0b0000) {
+        CPU_inserir_tempo_operacao(cpu, OP_STOR, num);
+        CPU_inserir_tempo_operacao(cpu, OP_STOR_L, num);
+        CPU_inserir_tempo_operacao(cpu, OP_STOR_R, num);
+    
+    } else if (strcmp(nome_operacao, "JUMP") == 0 && (modificadores == 0b0000 || modificadores & (MOD_MAIS))) {
+        if (modificadores & MOD_MAIS) {
+            proximo_simbolo(&linha);            
+            CPU_inserir_tempo_operacao(cpu, OP_JUMP_COND_L, num);
+            CPU_inserir_tempo_operacao(cpu, OP_JUMP_COND_R, num);
+        } else if (modificadores == 0) {
+            CPU_inserir_tempo_operacao(cpu, OP_JUMP_L, num);
+            CPU_inserir_tempo_operacao(cpu, OP_JUMP_R, num);
+        }
+    
+    } else if (strcmp(nome_operacao, "ADD") == 0 && (modificadores == 0b0000 || modificadores & (MOD_PIPE))) {
+        if (modificadores & MOD_PIPE)
+            CPU_inserir_tempo_operacao(cpu, OP_ADD_MOD, num);
+        else if (modificadores == 0)
+            CPU_inserir_tempo_operacao(cpu, OP_ADD, num);
+    
+    } else if (strcmp(nome_operacao, "SUB") == 0 && (modificadores == 0b0000 || modificadores & (MOD_PIPE))) {
+        if (modificadores & MOD_PIPE)
+            CPU_inserir_tempo_operacao(cpu, OP_SUB_MOD, num);
+        else if (modificadores == 0)
+            CPU_inserir_tempo_operacao(cpu, OP_SUB, num);
+    
+    } else if (strcmp(nome_operacao, "MUL") == 0 && modificadores == 0b0000) {
+        CPU_inserir_tempo_operacao(cpu, OP_MUL, num);
+    
+    } else if (strcmp(nome_operacao, "DIV") == 0 && modificadores == 0b0000) {
+        CPU_inserir_tempo_operacao(cpu, OP_DIV, num);
+    
+    } else if (strcmp(nome_operacao, "EXIT") == 0 && modificadores == 0b0000) {
+        CPU_inserir_tempo_operacao(cpu, OP_EXIT, num);
+    
+    } else {
+        RAISE("operacao inválida ou modificadores inválidos em '%s' (mod: %i)", nome_operacao, modificadores);
     }
 }
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
     num_linha = (num_linha - mem->tamanho_dados) / 2 + mem->tamanho_dados;
-
+    
     if (strcmp(nome_operacao, "LSH") == 0 || strcmp(nome_operacao, "RSH") == 0 || strcmp(nome_operacao, "EXIT") == 0) {
         if (nome_operacao[0] == 'L')
             memoria_adicionar_instrucao(mem, OP_LSH, 0, num_linha);
@@ -368,7 +467,7 @@ static Simbolo peek_simbolo(char *linha) {
 
 static bool e_numero(char *str) {
     size_t i = 0;
-    for (i = 0; str[i] >= 48 && str[i] <= 57; i++);
+    for (i = 0; (str[i] >= 48 && str[i] <= 57) || str[i] == '-'; i++);
     return i == strlen(str);
 }
 
@@ -376,7 +475,7 @@ static Simbolo except_proximo_simbolo(char **linha, SimbolosEnum tipo, int num_l
     Simbolo s = proximo_simbolo(linha);
 
     if (s.tipo != tipo) 
-        RAISE("na linha '%i': Um simbolo deveria ser %i mas é %i", num_linha, tipo, s.tipo);
+        RAISE("na linha '%i': Um simbolo deveria ser '%s' mas é '%s'", num_linha, simtoa(tipo), simtoa(s.tipo));
 
     return s;
 }
@@ -453,4 +552,33 @@ static char fpeek(FILE *f) {
     ungetc(c, f);
 
     return c;
+}
+
+static char *simtoa(SimbolosEnum simb) {
+    switch(simb) {
+        case OPERACAO:
+            return "OPERACAO";
+        case NUMERO:
+            return "NUMERO";
+        case MEMORIA:
+            return "MEMORIA";
+        case VIRGULA:
+            return "VIRGULA";
+        case PIPE:
+            return "PIPE";
+        case PAREN_OPEN:
+            return "PAREN_OPEN";
+        case PAREN_CLOSE:
+            return "PAREN_CLOSE";
+        case MENOS:
+            return "MENOS";
+        case DOIS_PONTOS:
+            return "DOIS_PONTOS";
+        case VAZIO:
+            return "VAZIO";
+        case MAIS:
+            return "MAIS";
+        default:
+            return "Unknown";
+    }
 }

@@ -7,6 +7,9 @@
         "memoria.h": "c",
         "stdint.h": "c",
         "ias.h": "c",
-        "tradutor.h": "c"
+        "tradutor.h": "c",
+        "barramento.h": "c",
+        "utils.h": "c",
+        "cpu.h": "c"
     }
 }

@@ -1,6 +1,8 @@
 #ifndef DEFS_H_
 #define DEFS_H_
 
+#include <stdint.h>
+
 #define TAMANHO 4096
 // #define TAMANHO_REAL TAMANHO * 5
 // int TAMANHO_DADOS = 500;
@@ -35,5 +37,7 @@
 #define OP_STOR_L           (INSTRUCAO)0b00010010
 #define OP_STOR_R           (INSTRUCAO)0b00010011
 #define OP_EXIT             (INSTRUCAO)0b11111111
+
+char *optoa(INSTRUCAO op);
 
 #endif
