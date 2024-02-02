@@ -1,4 +1,12 @@
-add: 2
+loadM: 1
+loadMM: 1
+load-M: 1
+load|M: 2
+load-|M: 2
+jump+: 1
+stor: 1
+storM: 1
+add: 1
 stor: 12
 load: 3
 -10

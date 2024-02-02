@@ -2,7 +2,7 @@
 
 #define MOD_PIPE 0b0001
 #define MOD_MENOS 0b0010
-#define MOD_MQ 0b0100
+#define MOD_M 0b0100
 #define MOD_MAIS 0b1000
 
 typedef enum {
@@ -167,90 +167,115 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
 
 static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;
-    short modificadores = 0;
+    short modificadores = 0,
+          num = 0;
+    INSTRUCAO operacao = 0;
     Simbolo simbolo_a_seguir = peek_simbolo(linha);
-
-    if (simbolo_a_seguir.tipo == OPERACAO && strcmp(simbolo_a_seguir.valor, "MQ") == 0) {
-        proximo_simbolo(&linha);
-        modificadores |= MOD_MQ;
-    } else if (simbolo_a_seguir.tipo == MAIS) {
+    
+    if (simbolo_a_seguir.tipo == MAIS) {
         proximo_simbolo(&linha);
         modificadores |= MOD_MAIS;
-    } else {
-        if (simbolo_a_seguir.tipo == PIPE) {
-            proximo_simbolo(&linha);
-            modificadores |= MOD_PIPE;
-            simbolo_a_seguir = peek_simbolo(linha);
-        }
-
-        if (simbolo_a_seguir.tipo == MENOS) {
-            proximo_simbolo(&linha);
-            modificadores |= MOD_MENOS;
-        }
+        simbolo_a_seguir = peek_simbolo(linha);
     }
+
+    if (simbolo_a_seguir.tipo == MENOS) {
+        proximo_simbolo(&linha);
+        modificadores |= MOD_MENOS;
+        simbolo_a_seguir = peek_simbolo(linha);
+    }
+
+    if (simbolo_a_seguir.tipo == PIPE) {
+        proximo_simbolo(&linha);
+        modificadores |= MOD_PIPE;
+        simbolo_a_seguir = peek_simbolo(linha);
+    }
+
+    if (simbolo_a_seguir.tipo == OPERACAO && strcmp(simbolo_a_seguir.valor, "M") == 0) {
+        proximo_simbolo(&linha);
+        modificadores |= MOD_M;
+        simbolo_a_seguir = peek_simbolo(linha);
+    }
+
+    if (strcmp(nome_operacao, "LSH") == 0) {
+        operacao = OP_LSH;
+    
+    } else if (strcmp(nome_operacao, "RSH") == 0) {
+        operacao = OP_RSH;
+    
+    } else if (strcmp(nome_operacao, "LOADM") == 0) {
+        operacao = OP_LOAD_MQ;
+
+    } else if (strcmp(nome_operacao, "LOADMM") == 0) {
+        operacao = OP_LOAD_MQ_M;
+    
+    } else if (strcmp(nome_operacao, "LOAD") == 0) {
+        if (modificadores & MOD_M) {
+            modificadores &= ~MOD_M;
+
+            if (modificadores & MOD_MENOS && modificadores & MOD_PIPE) {
+                modificadores &= ~MOD_MENOS;
+                modificadores &= ~MOD_PIPE;
+                
+                operacao = OP_LOAD_MENOS_MOD;
+            } else if (modificadores & MOD_PIPE){
+                modificadores &= ~MOD_PIPE;
+              
+                operacao = OP_LOAD_MOD;
+            } else if (modificadores & MOD_MENOS) {
+                modificadores &= ~MOD_MENOS;
+               
+                operacao = OP_LOAD_MENOS;
+            } else {
+                RAISE("operacao inválida ou modificadores inválidos em '%s' (mod: %i)", nome_operacao, modificadores);
+            }
+        } else if (modificadores == 0) {
+            operacao = OP_LOAD;
+        } else {
+            RAISE("combinação de modificadores inválida em 'LOAD'");
+        }
+    } else if (strcmp(nome_operacao, "STOR") == 0) {
+        operacao = OP_STOR;
+    
+    } else if (strcmp(nome_operacao, "JUMP") == 0) {
+        if (modificadores & MOD_MAIS) {
+            modificadores &= ~MOD_MAIS;
+
+            operacao = OP_JUMP_COND;
+        } else if (modificadores == 0) {
+            operacao = OP_JUMP;
+        }
+    
+    } else if (strcmp(nome_operacao, "ADD") == 0) {
+        if (modificadores & MOD_PIPE) {
+            modificadores &= ~MOD_PIPE;
+
+            operacao = OP_ADD_MOD;
+        } else if (modificadores == 0) {
+            operacao = OP_ADD;
+        }   
+    } else if (strcmp(nome_operacao, "SUB") == 0) {
+        if (modificadores & MOD_PIPE) {
+            modificadores &= ~MOD_PIPE;
+
+            operacao = OP_SUB_MOD;
+        } else if (modificadores == 0) {
+            operacao = OP_SUB;
+        }
+    } else if (strcmp(nome_operacao, "MUL") == 0) {
+        operacao = OP_MUL;
+    } else if (strcmp(nome_operacao, "DIV") == 0) {
+        operacao = OP_DIV;
+    } else if (strcmp(nome_operacao, "EXIT") == 0) {
+        operacao = OP_EXIT;
+    }
+
+    if (modificadores != 0)
+        RAISE("operacao inválida ou modificadores inválidos em '%s' (mod: %i)", nome_operacao, modificadores);
 
     except_proximo_simbolo(&linha, DOIS_PONTOS, num_linha);
-    long num = parse_numero(&linha, num_linha);
+    num = (short)parse_numero(&linha, num_linha);
 
-    if (strcmp(nome_operacao, "LSH") == 0 && modificadores == 0b0000) {
-        CPU_inserir_tempo_operacao(cpu, OP_LSH, num);
-    
-    } else if (strcmp(nome_operacao, "RSH") == 0 && modificadores == 0b0000) {
-        CPU_inserir_tempo_operacao(cpu, OP_RSH, num);
-    
-    } else if (strcmp(nome_operacao, "LOAD") == 0 && (modificadores == 0b0000 || modificadores & (MOD_MENOS | MOD_PIPE | MOD_MQ))) {
-        if (modificadores & MOD_PIPE && modificadores & MOD_MENOS) 
-            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MENOS_MOD, num);
-        else if (modificadores & MOD_PIPE)
-            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MOD, num);
-        else if (modificadores & MOD_MENOS)
-            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MENOS, num);
-        else if (modificadores == MOD_MQ) {
-            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MQ, num);
-            CPU_inserir_tempo_operacao(cpu, OP_LOAD_MQ_M, num);
-        }
-        else if (modificadores == 0)
-            CPU_inserir_tempo_operacao(cpu, OP_LOAD, num);
-
-    } else if (strcmp(nome_operacao, "STOR") == 0 && modificadores == 0b0000) {
-        CPU_inserir_tempo_operacao(cpu, OP_STOR, num);
-        CPU_inserir_tempo_operacao(cpu, OP_STOR_L, num);
-        CPU_inserir_tempo_operacao(cpu, OP_STOR_R, num);
-    
-    } else if (strcmp(nome_operacao, "JUMP") == 0 && (modificadores == 0b0000 || modificadores & (MOD_MAIS))) {
-        if (modificadores & MOD_MAIS) {
-            proximo_simbolo(&linha);            
-            CPU_inserir_tempo_operacao(cpu, OP_JUMP_COND_L, num);
-            CPU_inserir_tempo_operacao(cpu, OP_JUMP_COND_R, num);
-        } else if (modificadores == 0) {
-            CPU_inserir_tempo_operacao(cpu, OP_JUMP_L, num);
-            CPU_inserir_tempo_operacao(cpu, OP_JUMP_R, num);
-        }
-    
-    } else if (strcmp(nome_operacao, "ADD") == 0 && (modificadores == 0b0000 || modificadores & (MOD_PIPE))) {
-        if (modificadores & MOD_PIPE)
-            CPU_inserir_tempo_operacao(cpu, OP_ADD_MOD, num);
-        else if (modificadores == 0)
-            CPU_inserir_tempo_operacao(cpu, OP_ADD, num);
-    
-    } else if (strcmp(nome_operacao, "SUB") == 0 && (modificadores == 0b0000 || modificadores & (MOD_PIPE))) {
-        if (modificadores & MOD_PIPE)
-            CPU_inserir_tempo_operacao(cpu, OP_SUB_MOD, num);
-        else if (modificadores == 0)
-            CPU_inserir_tempo_operacao(cpu, OP_SUB, num);
-    
-    } else if (strcmp(nome_operacao, "MUL") == 0 && modificadores == 0b0000) {
-        CPU_inserir_tempo_operacao(cpu, OP_MUL, num);
-    
-    } else if (strcmp(nome_operacao, "DIV") == 0 && modificadores == 0b0000) {
-        CPU_inserir_tempo_operacao(cpu, OP_DIV, num);
-    
-    } else if (strcmp(nome_operacao, "EXIT") == 0 && modificadores == 0b0000) {
-        CPU_inserir_tempo_operacao(cpu, OP_EXIT, num);
-    
-    } else {
-        RAISE("operacao inválida ou modificadores inválidos em '%s' (mod: %i)", nome_operacao, modificadores);
-    }
+    CPU_inserir_tempo_operacao(cpu, operacao, num);
 }
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
