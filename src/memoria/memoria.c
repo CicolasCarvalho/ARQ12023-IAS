@@ -39,13 +39,15 @@ PALAVRA memoria_ler(Memoria *mem, uint pos) {
 }
 
 void memoria_adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint pos) {
-    static int contador_operacoes = 0;
-
     PALAVRA pal = memoria_ler(mem, pos);
     PALAVRA operacao_argumento = (PALAVRA)op << 12 | (PALAVRA)arg;
     
-    pal = pal | (operacao_argumento << ((contador_operacoes % 2 == 0) * 20));
+    if ((pal & RIGHT_MASK) != 0)
+        pal <<= 20;
+
+    pal |= operacao_argumento;
+
+    // pal = pal | (operacao_argumento << ((contador_operacoes % 2 == 0) * 20));
     
     memoria_escrever(mem, pos, pal);
-    contador_operacoes++;
 }

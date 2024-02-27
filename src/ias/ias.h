@@ -3,9 +3,13 @@
 
 #include <stdint.h>
 #include "../memoria/memoria.h"
+#include "../barramento/barramento.h"
 #include "../cpu/cpu.h"
+#include "../utils.h"
 
 typedef struct {
+    bool rodando;
+    // bool next_IBR;
     // int tamanho;
     // int tamanho_dados;
 } IASConfig;
@@ -13,10 +17,12 @@ typedef struct {
 typedef struct {
     IASConfig config;
     CPU *cpu;
+    Barramento *barramento;
     Memoria *memoria;
 } IAS;
 
 IAS *IAS_criar(void);
-void IAS_tick(void);
+void IAS_iniciar(IAS *ias, PALAVRA PC);
+void IAS_tick(IAS *ias);
 
 #endif

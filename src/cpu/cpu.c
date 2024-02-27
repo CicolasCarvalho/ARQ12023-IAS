@@ -3,12 +3,22 @@
 CPU *CPU_criar(void) {
     CPU *cpu = malloc(sizeof(CPU));
 
+    cpu->banco_regs = (BancoRegistradores){
+        .rAC = 0,
+        .rEQ = 0,
+        .rMBR = 0,
+        .rPC = 0,
+        .rMAR = 0,
+        .rIBR = 0,
+        .rIR = 0,
+    };
+
     return cpu;
 }
 
 // insercao em uma lista ligada
 void CPU_inserir_tempo_operacao(CPU *cpu, INSTRUCAO op, short tempo) {
-    PRINT("op: %s tempo: %i", optoa(op), tempo);
+    // PRINT("op: %s tempo: %i", optoa(op), tempo);
 
     if (cpu->config.tempo_execucao_lista == NULL) {
         cpu->config.tempo_execucao_lista = PipelineConfig_criar(op, tempo);

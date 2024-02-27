@@ -7,6 +7,7 @@
 #include "../uc/uc.h"
 #include "../ula/ula.h"
 #include "../barramento/barramento.h"
+#include "../registradores/registradores.h"
 
 typedef struct _PipelineOpConfigNode PipelineOpConfigNode;
 
@@ -22,8 +23,9 @@ typedef struct {
 
 typedef struct {
     CPUConfig config;
-    UC uc;
-    ULA ula;
+    BancoRegistradores banco_regs;
+    // UC uc;
+    // ULA ula;
     Barramento barramento;
 } CPU;
 

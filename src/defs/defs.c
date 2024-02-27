@@ -47,7 +47,7 @@ char *optoa(INSTRUCAO op) {
             return "OP_STOR_R";
         case (INSTRUCAO)0b11111111:
             return "OP_EXIT";       
-    default:
-        return "unknown";
+        default:
+            return "unknown";
     }
 }
