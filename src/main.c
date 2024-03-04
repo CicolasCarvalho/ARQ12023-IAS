@@ -10,17 +10,17 @@
 
 void clock_update(IAS *ias, int speed) {
     double tick_time = 1./speed,
-           time_start = 0.,
-           time_elapsed = 0.;
+           time_start,
+           time_elapsed;
     struct timeval tv_start,
                    tv_elapsed;
 
     gettimeofday(&tv_start, NULL);
-    time_start = (tv_start.tv_usec / 1000000.) + ((double)tv_start.tv_sec);
+    time_start = ((double)tv_start.tv_usec / 1000000.) + ((double)tv_start.tv_sec);
 
     while (ias->config.rodando) {
         gettimeofday(&tv_elapsed, NULL);
-        time_elapsed = (tv_elapsed.tv_usec / 1000000.) + ((double)tv_elapsed.tv_sec);
+        time_elapsed = ((double)tv_elapsed.tv_usec / 1000000.) + ((double)tv_elapsed.tv_sec);
 
         if (time_elapsed - time_start > tick_time || RODAR_SEM_CLOCK) {
             IAS_tick(ias);
@@ -45,16 +45,21 @@ int main(int argc, char **argv) {
 
     // return 0;
 
-    if (argc <= 4) RAISE("Numero de argumentos incompativel");
+    if (argc <= 4) {
+        RAISE("Numero de argumentos incompativel");
+    }
 
     if (strcmp(argv[1], "-p") == 0) {
         char *in = argv[2];
 
         FILE *f = fopen(in, "r");
-        if (!f) RAISE("Arquivo '%s' nao encontrado", in);
+        if (!f) {
+            RAISE("Arquivo '%s' nao encontrado", in);
+        }
 
-
-        if (strcmp(argv[3], "-i") != 0) RAISE("comando nao receonhecido '%s'", argv[3]);
+        if (strcmp(argv[3], "-i") != 0) {
+            RAISE("comando nao receonhecido '%s'", argv[3]);
+        }
         int tamanho_dados = atoi(argv[4]);
         
         IAS *ias = IAS_criar();
@@ -78,15 +83,19 @@ int main(int argc, char **argv) {
     } else if (strcmp(argv[1], "-t") == 0) {
         char *in = argv[2];
         
-        if (strcmp(argv[3], "-m") != 0) RAISE("comando nao receonhecido '%s'", argv[3]);
+        if (strcmp(argv[3], "-m") != 0) {
+            RAISE("comando nao receonhecido '%s'", argv[3]);
+        }
         char *out = argv[4];
 
-        if (strcmp(argv[5], "-i") != 0) RAISE("comando nao receonhecido '%s'", argv[5]);
+        if (strcmp(argv[5], "-i") != 0) {
+            RAISE("comando nao receonhecido '%s'", argv[5]);
+        }
         int tamanho_dados = atoi(argv[6]);
 
         compilar_para_arquivo(in, out, TAMANHO, tamanho_dados);
     } else {
-        RAISE("comando nao receonhecido '%s'", argv[1])
+        RAISE("comando nao receonhecido '%s'", argv[1]);
     }
     
     return 0;

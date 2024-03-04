@@ -19,34 +19,37 @@ void IAS_iniciar(IAS *ias, PALAVRA PC) {
 
 void IAS_tick(IAS *ias) {
     BancoRegistradores *banco_regs = &ias->cpu->banco_regs;
-
-    PRINT("%ld: %s %ld", banco_regs->rPC, optoa(banco_regs->rIR), banco_regs->rMAR);
+    PALAVRA PC_antigo = banco_regs->rPC;
 
     if (banco_regs->rIBR != 0) {
-        banco_regs->rIR = (banco_regs->rIBR & (OP_MASK)) >> 12;
-        banco_regs->rMAR = (banco_regs->rIBR & (ARGUMENTO_MASK));
+        rIR_load(banco_regs, banco_regs->rIBR, RIGHT_MASK);
+        rMAR_load(banco_regs, banco_regs->rIBR, RIGHT_MASK);
 
-        banco_regs->rIBR = 0;
-        banco_regs->rPC += 1;
+        rIBR_reset(banco_regs);
+        rPC_increment(banco_regs);
     } else {
-        banco_regs->rMAR = banco_regs->rPC;
-        
-        // barramento_load_rMAR();
-        ias->barramento->endereco = banco_regs->rMAR;
-        // MEM_tick()
-        ias->barramento->dados = memoria_ler(ias->memoria, ias->barramento->endereco);
-        // barramento_set_rMBR();
-        banco_regs->rMBR = ias->barramento->dados;
+        // MAR <- PC
+        rMAR_load(banco_regs, banco_regs->rPC, RIGHT_MASK);
+
+        // barramento.endereco <- MAR
+        barramento_endereco_load(ias->barramento, banco_regs);
+        // barramento.dados <- M(barramento.endereco)
+        memoria_tick(ias->memoria, ias->barramento);
+        // MBT <- barramento.dados
+        barramento_dados_read(ias->barramento, banco_regs);
 
         if ((banco_regs->rMBR & LEFT_MASK) == 0) {
-            banco_regs->rIR = (banco_regs->rMBR & OP_MASK) >> 12;
-            banco_regs->rMAR = (banco_regs->rMBR & ARGUMENTO_MASK);
 
-            banco_regs->rPC += 1;
+            rIR_load(banco_regs, banco_regs->rMBR, RIGHT_MASK);
+            rMAR_load(banco_regs, banco_regs->rMBR, RIGHT_MASK);
+
+            rPC_increment(banco_regs);
         } else {
-            banco_regs->rIBR = (banco_regs->rMBR & RIGHT_MASK);
-            banco_regs->rIR = (banco_regs->rMBR & (OP_MASK << 20)) >> 32;
-            banco_regs->rMAR = (banco_regs->rMBR & (ARGUMENTO_MASK << 20)) >> 20;
+            rIBR_load(banco_regs, banco_regs->rMBR);
+            rIR_load(banco_regs, banco_regs->rMBR, LEFT_MASK);
+            rMAR_load(banco_regs, banco_regs->rMBR, LEFT_MASK);
         }
     }
+
+    PRINT("%ld: %s %ld", PC_antigo, optoa(banco_regs->rIR), banco_regs->rMAR);
 }

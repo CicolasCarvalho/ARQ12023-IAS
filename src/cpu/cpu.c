@@ -40,7 +40,9 @@ void CPU_inserir_tempo_operacao(CPU *cpu, INSTRUCAO op, short tempo) {
 }
 
 short CPU_get_tempo_operacao(CPU *cpu, INSTRUCAO op) {
-    if (cpu->config.tempo_execucao_lista == NULL) RAISE("CPU nao tem nenhuma configuração de pipeline");
+    if (cpu->config.tempo_execucao_lista == NULL) {
+        RAISE("CPU nao tem nenhuma configuração de pipeline");
+    }
 
     PipelineOpConfigNode *tmp = cpu->config.tempo_execucao_lista;
 
@@ -50,7 +52,9 @@ short CPU_get_tempo_operacao(CPU *cpu, INSTRUCAO op) {
 
     if (tmp->op == op) return tmp->tempo;
 
-    if (tmp == NULL) RAISE("CPU nao tem nenhuma configuração para '%d' de pipeline", op);
+    if (tmp == NULL) {
+        RAISE("CPU nao tem nenhuma configuração para '%d' de pipeline", op);
+    }
     return -1;
 }
 

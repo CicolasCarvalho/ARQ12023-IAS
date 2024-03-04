@@ -33,6 +33,7 @@ CPU *CPU_criar(void);
 void CPU_inserir_tempo_operacao(CPU *cpu, INSTRUCAO op, short tempo);
 short CPU_get_tempo_operacao(CPU *cpu, INSTRUCAO op);
 
+
 PipelineOpConfigNode *PipelineConfig_criar(INSTRUCAO op, short tempo);
 
 #endif

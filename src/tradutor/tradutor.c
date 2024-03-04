@@ -60,9 +60,13 @@ static char *simtoa(SimbolosEnum simb);
 
 void compilar_para_arquivo(char *in, char *out, int tamanho, int tamanho_dados) {
     FILE *f = fopen(in, "r");
-    if (!f) RAISE("Arquivo '%s' não encontrado", in);
+    if (!f) {
+        RAISE("Arquivo '%s' não encontrado", in);
+    }
     FILE *f_out = fopen(out, "w");
-    if (!f_out) RAISE("Arquivo '%s' não encontrado", out);
+    if (!f_out) {
+        RAISE("Arquivo '%s' não encontrado", out);
+    }
 
     Memoria *mem = memoria_criar(tamanho, tamanho_dados);
 
@@ -75,7 +79,9 @@ void compilar_para_arquivo(char *in, char *out, int tamanho, int tamanho_dados) 
 }
 
 void compilar_para_memoria(FILE *in, Memoria *mem) {
-    if (mem == NULL) RAISE("Memoria não pode ser nula");
+    if (mem == NULL) {
+        RAISE("Memoria não pode ser nula");
+    }
 
     compilar_secao_configuracao(in, NULL);
     compilar_secao_dados(in, mem);
@@ -83,9 +89,15 @@ void compilar_para_memoria(FILE *in, Memoria *mem) {
 }
 
 void compilar_para_IAS(FILE *in, IAS *ias) {
-    if (ias == NULL) RAISE("IAS não pode ser nulo");
-    if (ias->memoria == NULL) RAISE("Memoria não pode ser nula");
-    if (ias->cpu == NULL) RAISE("cpu não pode ser nula");
+    if (ias == NULL) {
+        RAISE("IAS não pode ser nulo");
+    }
+    if (ias->memoria == NULL) {
+        RAISE("Memoria não pode ser nula");
+    }
+    if (ias->cpu == NULL) {
+        RAISE("cpu não pode ser nula");
+    }
 
     compilar_secao_configuracao(in, ias->cpu);
     compilar_secao_dados(in, ias->memoria);
@@ -98,14 +110,14 @@ static void compilar_secao_configuracao(FILE *in, CPU *cpu) {
     char linha[128] = "\0";
     int n = 0;
     int op_len = 0;
-    char c = '\0';
+    char c;
     bool fim = false;
 
     while (!fim && n < NUM_INSTRUCOES) {
-        c = charhigh(fgetc(in));
+        c = charhigh((char)fgetc(in));
         
         if (c == '\n' || c == EOF) {
-            fim = c == EOF;
+            fim = (bool)(c == EOF);
             
             compilar_linha_configuracao(linha, cpu, n++);
             op_len = 0;
@@ -129,9 +141,11 @@ static void compilar_secao_configuracao(FILE *in, CPU *cpu) {
 static void compilar_secao_dados(FILE *in, Memoria *mem) {
     for (int i = 0; i < mem->tamanho_dados; i++) {
         int64_t dado = 0;
-        if (fscanf(in, "%li", &dado) == EOF) RAISE("Erro ao ler dado na posição %d", i);
+        if (fscanf(in, "%li", &dado) == EOF) {
+            RAISE("Erro ao ler dado na posição %d", i);
+        }
 
-        bool negativo = dado < 0;
+        bool negativo = (bool)(dado < 0);
         dado = llabs(dado);
         dado &= (MASK >> 1);
         dado |= (negativo ? (1ll << 39): 0);
@@ -146,15 +160,15 @@ static void compilar_secao_dados(FILE *in, Memoria *mem) {
 static void compilar_secao_programa(FILE *in, Memoria *mem) {
     char linha[128] = "\0";
     int op_len = 0;
-    char c = '\0';
+    char c;
     int i = mem->tamanho_dados;
     bool fim = false;
 
     while (!fim) {
-        c = charhigh(fgetc(in));
+        c = charhigh((char)fgetc(in));
         
         if (c == '\n' || c == EOF) {
-            fim = c == EOF;
+            fim = (bool)(c == EOF);
 
             compilar_linha(linha, mem, i++);
             op_len = 0;
@@ -173,7 +187,7 @@ static void compilar_secao_programa(FILE *in, Memoria *mem) {
 static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;
     char modificadores = 0,
-          num = 0;
+          num;
     INSTRUCAO operacao = 0;
 
     processar_modificador(&linha, &modificadores, MAIS, MOD_MAIS);
@@ -257,13 +271,15 @@ static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
         operacao = OP_EXIT;
     }
 
-    if (operacao == 0) 
+    if (operacao == 0) {
         RAISE("operacao inválida '%s' (mod: %i)", nome_operacao, modificadores);
-    if (modificadores != 0)
+    }
+    if (modificadores != 0) {
         RAISE("operacao inválida ou modificadores inválidos em '%s' (mod: %i)", nome_operacao, modificadores);
+    }
 
     except_proximo_simbolo(&linha, DOIS_PONTOS, num_linha);
-    num = (short)parse_numero(&linha, num_linha);
+    num = (char)parse_numero(&linha, num_linha);
 
     if(cpu == NULL) {
         WARN("CPU e NULL, isso so deve acontecer caso esteja usando a flag '-t'");
@@ -335,12 +351,14 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
         ResultadoParseMemoria memoria = parse_memoria(&linha, num_linha);
             
         if (memoria.tipo == MULTIVALORADO) {
-            if (memoria.posicao == 'L') 
+            if (memoria.posicao == 'L') {
                 memoria_adicionar_instrucao(mem, OP_STOR_L, memoria.valor, num_linha);
-            else if (memoria.posicao == 'R')
+            }
+            else if (memoria.posicao == 'R') {
                 memoria_adicionar_instrucao(mem, OP_STOR_R, memoria.valor, num_linha);
-            else
+            } else {
                 RAISE("posicionamento invalido para STOR");
+            }
         } else {
             memoria_adicionar_instrucao(mem, OP_STOR, memoria.valor, num_linha);
         }
@@ -490,7 +508,7 @@ static Simbolo peek_simbolo(char *linha) {
 static bool e_numero(char *str) {
     size_t i = 0;
     for (i = 0; (str[i] >= 48 && str[i] <= 57) || str[i] == '-'; i++);
-    return i == strlen(str);
+    return (bool)(i == strlen(str));
 }
 
 static Simbolo except_proximo_simbolo(char **linha, SimbolosEnum tipo, int num_linha) {
@@ -498,8 +516,9 @@ static Simbolo except_proximo_simbolo(char **linha, SimbolosEnum tipo, int num_l
 
     // PRINT("%s / %s", s.valor, *linha);
 
-    if (s.tipo != tipo) 
+    if (s.tipo != tipo) {
         RAISE("na linha '%i': Um simbolo deveria ser '%s' mas e '%s'", num_linha, simtoa(tipo), simtoa(s.tipo));
+    }
 
     return s;
 }
@@ -551,8 +570,9 @@ static ResultadoParseMemoria parse_memoria(char **linha, int num_linha) {
 static ResultadoParseMemoria except_memoria(char **linha, int num_linha, FuncaoMemoriaEnum tipo) {
     ResultadoParseMemoria mem = parse_memoria(linha, num_linha);
 
-    if (mem.tipo != tipo)
+    if (mem.tipo != tipo) {
         RAISE("memoria do tipo errada passada");
+    }
 
     return mem;
 }
@@ -566,13 +586,13 @@ static ResultadoParseMemoria except_memoria_MOD(char **linha, int num_linha) {
 }
 
 static char charhigh(char c) {
-    return c >= 'a' && c <= 'z' ? c - 32 : c;  
+    return c >= 'a' && c <= 'z' ? c - 32 : c; // NOLINT(*-narrowing-conversions)
 }
 
 static char fpeek(FILE *f) {
     char c;
 
-    c = fgetc(f);
+    c = (char)fgetc(f);
     ungetc(c, f);
 
     return c;
@@ -612,6 +632,6 @@ static void processar_modificador(char **linha, char *modificadores, SimbolosEnu
     
     if (simbolo_a_seguir.tipo == simb) {
         proximo_simbolo(linha);
-        *modificadores |= tipo_mod;
+        *modificadores |= tipo_mod; // NOLINT(*-narrowing-conversions)
     }
 }

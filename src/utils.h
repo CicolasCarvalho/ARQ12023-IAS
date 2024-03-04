@@ -18,22 +18,16 @@
 #ifndef LOG_H_
     #define LOG_H_
     #define PRINT(...)                             \
-        {                                          \
             printf("%s:%i: ", __FILE__, __LINE__); \
             printf(__VA_ARGS__);                   \
-            printf("\n");                          \
-        }
+            printf("\n")
     #define WARN(...)           \
-        {                       \
             printf("\033[0;33mWARN:\033[0m");    \
-            PRINT(__VA_ARGS__)  \
-        }
+            PRINT(__VA_ARGS__)
     #define RAISE(...)          \
-        {                       \
             printf("\033[0;31mERROR:\033[0m");    \
-            PRINT(__VA_ARGS__)  \
-            exit(1);            \
-        }
+            PRINT(__VA_ARGS__);  \
+            exit(1)
 #endif
 
 #ifndef bool
