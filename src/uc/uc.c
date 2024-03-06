@@ -2,6 +2,8 @@
 
 static void buscar_instrucao(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 static void decodificar(BancoRegistradores *banco);
+static void check_in(Pipeline *pipeline, BancoRegistradores *banco, uint8_t estagio);
+static void check_out(Pipeline *pipeline, BancoRegistradores *banco, uint8_t estagio);
 
 UC *UC_criar(void) {
     UC *uc = malloc(sizeof(UC));
@@ -12,6 +14,8 @@ UC *UC_criar(void) {
     uc->pipeline.f_executar = NULL;
     uc->pipeline.f_escrita_resultados = NULL;
 
+    uc->pipeline.ciclo_execucao = 0;
+
     return uc;
 }
 
@@ -19,22 +23,54 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
     PALAVRA PC_antigo = banco->rPC;
 
     uc->pipeline.f_buscar_instrucao(banco, barramento, memoria);
-    // check_out(0)
-    // MBR
-    // check_in(0)
     uc->pipeline.f_decodificar(banco);
-    // check_out(1)
-    // IR, IBR, MAR, MBR
-    // check_in(1)
-    // uc->pipeline.f_busca_operandos(banco, barramento, memoria);
-    // check_out(2)
-    // IR, IBR, MAR, MBR
-    // check_in(2)
-    // uc->pipeline.f_executar(0, banco, ula);
-    // check_out(3)
-    // IR, IBR, MAR, MBR, AC, MQ
-    // check_in(3)
-    // uc->pipeline.f_escrita_resultados(banco, barramento, memoria);
+
+    InstrucaoConfig inst = pipeline_get_instrucao(uc->pipeline, banco->rIR & 0xFF);
+    uc->pipeline.f_busca_operandos = inst.f_busca_operandos;
+    if (uc->pipeline.f_busca_operandos) {
+        uc->pipeline.f_busca_operandos(banco, barramento, memoria);
+    }
+
+    if (banco->rIR == OP_EXIT) exit(0);
+    uc->pipeline.f_executar = inst.f_executar;
+    if (uc->pipeline.f_executar) {
+        uc->pipeline.f_executar(uc->pipeline.ciclo_execucao, banco, ula);
+    }
+
+    uc->pipeline.f_escrita_resultados = inst.f_escrita_resultados;
+    if (uc->pipeline.f_escrita_resultados) {
+        uc->pipeline.f_escrita_resultados(banco, barramento, memoria);
+    }
+
+    // if (uc->pipeline.f_escrita_resultados) {
+    //     // ver se tem mid_registers[3]
+    //     // se sim tem que fazer check_in(3)
+    //     uc->pipeline.f_escrita_resultados(banco, barramento, memoria);
+    //     uc->pipeline.f_escrita_resultados = NULL;
+    // }
+    //
+    // if (uc->pipeline.f_executar) {
+    //     // ver se tem mid_register[2]
+    //     // se sim tem que fazer check_in(2)
+    //     bool resultado = uc->pipeline.f_executar(uc->pipeline.ciclo_execucao, banco, ula);
+    //
+    //     if (resultado == true) {
+    //         uc->pipeline.ciclo_execucao = 0;
+    //     } else {
+    //         uc->pipeline.ciclo_execucao++;
+    //     }
+    //     // fazer check_out(3)
+    // }
+    //
+    // if (uc->pipeline.f_busca_operandos) {
+    //    // ver se tem mid_registers[1]
+    //    // se sim tem que fazer check_in(0)
+    //    uc->pipeline.f_busca_operandos(banco, barramento, memoria);
+    // }
+    //
+    // if (uc->pipeline.f_decodificar) {
+    //     uc->pipeline.f_decodificar(banco);
+    // }
 
     PRINT("%ld: %s %ld", PC_antigo, optoa(banco->rIR), banco->rMAR);
 }
@@ -75,4 +111,12 @@ static void decodificar(BancoRegistradores *banco) {
             rMAR_load(banco, banco->rMBR, LEFT_MASK);
         }
     }
+}
+
+static void check_in(Pipeline *pipeline, BancoRegistradores *banco, uint8_t estagio) {
+
+}
+
+static void check_out(Pipeline *pipeline, BancoRegistradores *banco, uint8_t estagio) {
+
 }

@@ -4,7 +4,7 @@
 void pipeline_inserir_tempo_operacao(Pipeline *pipeline, INSTRUCAO op, short tempo) {
     // PRINT("op: %s tempo: %i", optoa(op), tempo);
 
-    if (op == OP_EXIT) op = !op;
+    if (op == OP_EXIT) op = 0;
 
     pipeline->instrucoes[op].tempo = tempo;
 
@@ -19,9 +19,9 @@ void pipeline_inserir_tempo_operacao(Pipeline *pipeline, INSTRUCAO op, short tem
         pipeline->instrucoes[OP_JUMP_L].tempo = tempo;
 }
 
-short pipeline_get_tempo_operacao(Pipeline *pipeline, INSTRUCAO op) {
-    if (op == OP_EXIT) op = !op;
-    return pipeline->instrucoes[op].tempo;
+InstrucaoConfig pipeline_get_instrucao(Pipeline pipeline, INSTRUCAO op) {
+    if (op == OP_EXIT) op = 0;
+    return pipeline.instrucoes[op];
 }
 
 void pipeline_set_instrucao(Pipeline *pipeline, INSTRUCAO op,

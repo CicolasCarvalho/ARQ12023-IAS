@@ -38,10 +38,12 @@ typedef struct {
     FUN_BUSCA_OPERANDOS(f_busca_operandos);
     FUN_EXECUCAO(f_executar);
     FUN_ESCRITA_RESULTADOS(f_escrita_resultados);
+
+    uint8_t ciclo_execucao;
 } Pipeline;
 
 void pipeline_inserir_tempo_operacao(Pipeline *pipeline, INSTRUCAO op, short tempo);
-short pipeline_get_tempo_operacao(Pipeline *pipeline, INSTRUCAO op);
+InstrucaoConfig pipeline_get_instrucao(Pipeline pipeline, INSTRUCAO op);
 void pipeline_set_instrucao(Pipeline *pipeline, INSTRUCAO op,
                             FUN_BUSCA_OPERANDOS(f_busca_operandos),
                             FUN_EXECUCAO(f_executar),

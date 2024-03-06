@@ -29,6 +29,12 @@ void clock_update(IAS *ias, int speed) {
     }
 }
 
+void configurar_instrucoes(CPU *cpu) {
+    for (size_t i = 0; i < OP_STOR + 1; i++) {
+        cpu->uc->pipeline.instrucoes[i] = (InstrucaoConfig){0};
+    }
+}
+
 int main(int argc, char **argv) {
     // char *in = "./resources/in.ias";
 
@@ -66,6 +72,7 @@ int main(int argc, char **argv) {
         CPU *cpu = CPU_criar();
         Barramento *barramento = barramento_criar();
 
+        configurar_instrucoes(cpu);
         IAS *ias = IAS_criar(cpu, barramento, mem);
 
         compilar_para_IAS(f, ias);
