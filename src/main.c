@@ -61,17 +61,12 @@ int main(int argc, char **argv) {
             RAISE("comando nao receonhecido '%s'", argv[3]);
         }
         int tamanho_dados = atoi(argv[4]);
-        
-        IAS *ias = IAS_criar();
-        
-        Memoria *mem = memoria_criar(TAMANHO, tamanho_dados);
-        ias->memoria = mem;
-        
-        CPU *cpu = CPU_criar();
-        ias->cpu = cpu;
 
+        Memoria *mem = memoria_criar(TAMANHO, tamanho_dados);
+        CPU *cpu = CPU_criar();
         Barramento *barramento = barramento_criar();
-        ias->barramento = barramento;
+
+        IAS *ias = IAS_criar(cpu, barramento, mem);
 
         compilar_para_IAS(f, ias);
         PRINT("compilado com sucesso!");

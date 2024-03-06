@@ -9,31 +9,13 @@
 #include "../barramento/barramento.h"
 #include "../registradores/registradores.h"
 
-typedef struct _PipelineOpConfigNode PipelineOpConfigNode;
-
-struct _PipelineOpConfigNode {
-    INSTRUCAO op;
-    short tempo;
-    PipelineOpConfigNode *prox;
-};
-
 typedef struct {
-    PipelineOpConfigNode *tempo_execucao_lista;
-} CPUConfig;
-
-typedef struct {
-    CPUConfig config;
     BancoRegistradores banco_regs;
-    // UC uc;
-    // ULA ula;
-    Barramento barramento;
+    UC *uc;
+    ULA *ula;
 } CPU;
 
 CPU *CPU_criar(void);
-void CPU_inserir_tempo_operacao(CPU *cpu, INSTRUCAO op, short tempo);
-short CPU_get_tempo_operacao(CPU *cpu, INSTRUCAO op);
-
-
-PipelineOpConfigNode *PipelineConfig_criar(INSTRUCAO op, short tempo);
+void CPU_tick(CPU *cpu, Barramento *barramento, Memoria *memoria);
 
 #endif

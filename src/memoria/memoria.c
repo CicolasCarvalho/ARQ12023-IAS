@@ -53,6 +53,13 @@ void memoria_adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint
 }
 
 void memoria_tick(Memoria *mem, Barramento *barramento) {
-    PALAVRA pal = memoria_ler(mem, barramento->endereco);
-    barramento_dados_load(barramento, pal);
+    if (barramento->controle == CARREGAR) {
+        PALAVRA pal = memoria_ler(mem, barramento_endereco_read(barramento));
+        barramento_dados_write(barramento, pal);
+    } else if (barramento->controle == GUARDAR) {
+        PALAVRA pal = barramento_dados_read(barramento);
+        memoria_escrever(mem, barramento_endereco_read(barramento), pal);
+    } else {
+        RAISE("barramento de controle possui um valor não suportado! (%i)", barramento->controle);
+    }
 }

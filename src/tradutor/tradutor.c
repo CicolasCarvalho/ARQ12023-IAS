@@ -286,7 +286,7 @@ static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
         return;
     } 
 
-    CPU_inserir_tempo_operacao(cpu, operacao, num);
+    pipeline_inserir_tempo_operacao(&cpu->uc->pipeline, operacao, num);
 }
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
@@ -506,7 +506,7 @@ static Simbolo peek_simbolo(char *linha) {
 }
 
 static bool e_numero(char *str) {
-    size_t i = 0;
+    size_t i;
     for (i = 0; (str[i] >= 48 && str[i] <= 57) || str[i] == '-'; i++);
     return (bool)(i == strlen(str));
 }
