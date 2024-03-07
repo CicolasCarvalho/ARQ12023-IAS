@@ -22,7 +22,7 @@ void clock_update(IAS *ias, int speed) {
         gettimeofday(&tv_elapsed, NULL);
         time_elapsed = ((double)tv_elapsed.tv_usec / 1000000.) + ((double)tv_elapsed.tv_sec);
 
-        if (time_elapsed - time_start > tick_time || RODAR_SEM_CLOCK) {
+        if (RODAR_SEM_CLOCK || (time_elapsed - time_start) > tick_time) {
             IAS_tick(ias);
             time_start = time_elapsed;
         }

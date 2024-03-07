@@ -8,6 +8,7 @@
 #include "../ula/ula.h"
 #include "../utils.h"
 #include "../pipeline/pipeline.h"
+#include "../instrucoes/defaults/buscar_instrucao.h"
 
 typedef struct {
     Pipeline pipeline;
