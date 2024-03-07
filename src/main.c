@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "defs/defs.h"
 #include "tradutor/tradutor.h"
+#include "instrucoes/instrucoes.h"
 
 #define CLOCK_SPEED 1000 // Hz
 #define RODAR_SEM_CLOCK false
@@ -30,9 +31,10 @@ void clock_update(IAS *ias, int speed) {
 }
 
 void configurar_instrucoes(CPU *cpu) {
-    for (size_t i = 0; i < OP_STOR + 1; i++) {
-        cpu->uc->pipeline.instrucoes[i] = (InstrucaoConfig){0};
-    }
+    add_instrucoes(&cpu->uc->pipeline);
+    // for (size_t i = 0; i < OP_STOR + 1; i++) {
+    //     cpu->uc->pipeline.instrucoes[i] = (InstrucaoConfig){0};
+    // }
 }
 
 int main(int argc, char **argv) {
@@ -82,6 +84,7 @@ int main(int argc, char **argv) {
         IAS_iniciar(ias, tamanho_dados);
         clock_update(ias, CLOCK_SPEED);
 
+        IAS_free(ias);
     } else if (strcmp(argv[1], "-t") == 0) {
         char *in = argv[2];
         

@@ -26,6 +26,8 @@ InstrucaoConfig pipeline_get_instrucao(Pipeline pipeline, INSTRUCAO op) {
 
 void pipeline_set_instrucao(
         Pipeline *pipeline, INSTRUCAO op, FUN_BUSCA_OPERANDOS(f_busca_operandos), FUN_EXECUCAO(f_executar), FUN_ESCRITA_RESULTADOS(f_escrita_resultados)) {
+    if (op == OP_EXIT) op = 0;
+
     pipeline->instrucoes[op].f_busca_operandos = f_busca_operandos;
     pipeline->instrucoes[op].f_executar = f_executar;
     pipeline->instrucoes[op].f_escrita_resultados = f_escrita_resultados;

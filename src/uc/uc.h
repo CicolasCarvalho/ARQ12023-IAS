@@ -15,6 +15,7 @@ typedef struct {
 } UC;
 
 UC *UC_criar(void);
+void UC_free(UC *uc);
 
 void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 

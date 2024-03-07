@@ -19,6 +19,7 @@ typedef struct {
 } Barramento;
 
 Barramento *barramento_criar(void);
+void barramento_free(Barramento *barramento);
 
 void barramento_endereco_write(Barramento *barramento, PALAVRA pal);
 PALAVRA barramento_endereco_read(Barramento *barramento);

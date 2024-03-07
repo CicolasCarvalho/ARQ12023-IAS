@@ -14,6 +14,10 @@ UC *UC_criar(void) {
     return uc;
 }
 
+void UC_free(UC *uc) {
+    free(uc);
+}
+
 void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
     PRINT("PC: %ld", (int64_t)banco->rPC);
 

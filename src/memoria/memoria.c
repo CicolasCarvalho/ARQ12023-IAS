@@ -5,10 +5,14 @@ Memoria *memoria_criar(int tamanho, int tamanho_dados) {
 
     mem->tamanho = tamanho;
     mem->tamanho_dados = tamanho_dados;
-    mem->dados = malloc(tamanho * 5);
-    memset(mem->dados, 0b00000000, tamanho * 5);
+    mem->dados = calloc(tamanho * 5, sizeof(mem->dados));
 
     return mem;
+}
+
+void memoria_free(Memoria *mem) {
+    free(mem->dados);
+    free(mem);
 }
 
 void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal) {

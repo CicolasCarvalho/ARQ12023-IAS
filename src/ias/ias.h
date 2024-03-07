@@ -22,6 +22,7 @@ typedef struct {
 } IAS;
 
 IAS *IAS_criar(CPU *cpu, Barramento *barramento, Memoria *memoria);
+void IAS_free(IAS *ias);
 void IAS_iniciar(IAS *ias, PALAVRA PC);
 void IAS_tick(IAS *ias);
 

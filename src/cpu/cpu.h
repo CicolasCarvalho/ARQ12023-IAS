@@ -16,6 +16,7 @@ typedef struct {
 } CPU;
 
 CPU *CPU_criar(void);
+void CPU_free(CPU *cpu);
 void CPU_tick(CPU *cpu, Barramento *barramento, Memoria *memoria);
 
 #endif

@@ -41,6 +41,20 @@
     typedef unsigned int uint;
 #endif
 
+#ifndef CONFIG_INSTRUCAO
+    #define CONFIG_INSTRUCAO(pipeline, NOME, OP_CODE) \
+        pipeline_set_instrucao(                 \
+            pipeline, OP_CODE,                  \
+            NOME ## _busca_operandos,      \
+            NOME ## _executar,             \
+            NOME ## _escrita_resultados    \
+        )
+#endif
+
+#ifndef UNUSED
+    #define UNUSED(...) (void)(__VA_ARGS__)
+#endif
+
 // #ifndef STRCON_
     // #define STRCON_
     // ///@brief Retorna se uma string contem um caracter

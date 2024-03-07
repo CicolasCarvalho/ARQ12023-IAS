@@ -13,6 +13,11 @@ IAS *IAS_criar(CPU *cpu, Barramento *barramento, Memoria *memoria) {
     return ias;
 }
 
+void IAS_free(IAS *ias) {
+    CPU_free(ias->cpu);
+
+}
+
 void IAS_iniciar(IAS *ias, PALAVRA PC) {
     ias->config.rodando = true;
     ias->cpu->banco_regs.rPC = PC;

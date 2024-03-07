@@ -10,6 +10,10 @@ Barramento *barramento_criar(void) {
     return barramento;
 }
 
+void barramento_free(Barramento *barramento) {
+    free(barramento);
+}
+
 void barramento_endereco_write(Barramento *barramento, PALAVRA pal) {
     barramento->endereco = pal;
 }

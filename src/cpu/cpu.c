@@ -17,6 +17,11 @@ CPU *CPU_criar(void) {
     return cpu;
 }
 
+void CPU_free(CPU *cpu) {
+    UC_free(cpu->uc);
+    free(cpu);
+}
+
 void CPU_tick(CPU *cpu, Barramento *barramento, Memoria *memoria) {
     UC_tick(cpu->uc, cpu->ula, &cpu->banco_regs, barramento, memoria);
 }

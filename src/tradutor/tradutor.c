@@ -74,6 +74,7 @@ void compilar_para_arquivo(char *in, char *out, int tamanho, int tamanho_dados) 
     compilar_para_memoria(f, mem);
     memoria_para_arquivo(f_out, mem);
 
+    memoria_free(mem);
     fclose(f);
     fclose(f_out);
 }
