@@ -19,7 +19,7 @@ void UC_free(UC *uc) {
 }
 
 void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
-    PRINT("PC: %ld", (int64_t)banco->rPC);
+    PRINT("PC: %ld", (int64_t)rPC_read(banco));
 
     static PALAVRA  p4_MBR = 0,
                     p4_MAR = 0;

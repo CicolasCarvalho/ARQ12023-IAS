@@ -74,7 +74,6 @@ void pipeline_buscar_operandos(
 
 void pipeline_executar(
         Pipeline *pipeline, PALAVRA p3_IR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
-
     pipeline->f_executar(pipeline->ciclo_execucao++, banco, ula);
 
     InstrucaoConfig inst = pipeline_get_instrucao(*pipeline, p3_IR);

@@ -1,7 +1,3 @@
-//
-// Created by nicolas on 06/03/24.
-//
-
 #ifndef BUSCAR_OPERANDOS_H_
 #define BUSCAR_OPERANDOS_H_
 

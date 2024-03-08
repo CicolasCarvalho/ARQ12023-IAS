@@ -15,7 +15,9 @@ IAS *IAS_criar(CPU *cpu, Barramento *barramento, Memoria *memoria) {
 
 void IAS_free(IAS *ias) {
     CPU_free(ias->cpu);
-
+    barramento_free(ias->barramento);
+    memoria_free(ias->memoria);
+    free(ias);
 }
 
 void IAS_iniciar(IAS *ias, PALAVRA PC) {

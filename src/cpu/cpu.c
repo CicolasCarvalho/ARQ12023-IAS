@@ -5,7 +5,7 @@ CPU *CPU_criar(void) {
 
     cpu->banco_regs = (BancoRegistradores){
         .rAC  = 0,
-        .rEQ  = 0,
+        .rMQ  = 0,
         .rMBR = 0,
         .rPC  = 0,
         .rMAR = 0,
