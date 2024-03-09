@@ -13,7 +13,7 @@
 #define ADD_OP_LOAD_MQ(pipeline) CONFIG_INSTRUCAO(pipeline, op_load_mq, OP_LOAD_MQ)
 
 void op_load_mq_busca_operandos(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
-void op_load_mq_executar(int iteracao, BancoRegistradores *banco, ULA *ula);
-void op_load_mq_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
+void op_load_mq_executar(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags);
+void op_load_mq_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags);
 
 #endif

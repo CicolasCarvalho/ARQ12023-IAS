@@ -2,14 +2,8 @@
 
 UC *UC_criar(void) {
     UC *uc = malloc(sizeof(UC));
-
-    uc->pipeline.f_buscar_instrucao = NULL;
-    uc->pipeline.f_decodificar = NULL;
-    uc->pipeline.f_busca_operandos = NULL;
-    uc->pipeline.f_executar = NULL;
-    uc->pipeline.f_escrita_resultados = NULL;
-
     uc->pipeline.ciclo_execucao = 0;
+    uc->pipeline.flags = PIPELINE_FLUSH;
 
     return uc;
 }
@@ -21,12 +15,20 @@ void UC_free(UC *uc) {
 void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
     PRINT("Tick!");
 
+    if (uc->pipeline.flags & PIPELINE_FLUSH) {
+        pipeline_flush(&uc->pipeline);
+        PRINT("Pipeline vazio!");
+        uc->pipeline.f_buscar_instrucao = buscar_instrucao;
+    }
+
     static PALAVRA  p4_MBR = 0,
                     p4_MAR = 0;
 
     if (uc->pipeline.f_escrita_resultados) {
         PRINT("-- Escrita de resultados --");
         pipeline_escrita_resultados(&uc->pipeline, p4_MBR, p4_MAR, banco, barramento, memoria, ula);
+
+        if (uc->pipeline.flags & PIPELINE_FLUSH || uc->pipeline.flags & STOP) return;
     }
 
     static PALAVRA  p3_IR  = 0,
@@ -36,6 +38,8 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
         PRINT("-- Execucao --");
         PRINT("p3_IR: (%s)", optoa(p3_IR));
         pipeline_executar(&uc->pipeline, p3_IR, p3_MBR, &p4_MAR, &p4_MBR, banco, ula);
+
+        if (uc->pipeline.flags & PIPELINE_FLUSH || uc->pipeline.flags & STOP) return;
     }
 
     static PALAVRA  p2_IR  = 0,
@@ -56,10 +60,5 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
     if (uc->pipeline.f_buscar_instrucao && !uc->pipeline.f_decodificar) {
         PRINT("-- Busca de Instrucoes --");
         pipeline_buscar_instrucao(&uc->pipeline, &p1_MBR, banco, barramento, memoria);
-    }
-
-    if (!uc->pipeline.f_buscar_instrucao) {
-        PRINT("Pipeline vazio!");
-        uc->pipeline.f_buscar_instrucao = buscar_instrucao;
     }
 }

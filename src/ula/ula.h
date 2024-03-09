@@ -8,9 +8,16 @@ typedef enum {
     TRANSFERIR,
     SOMAR,
     SUBTRAIR,
+    SUBTRAIR_MOD,
     MULTIPLICAR,
     DIVIDIR,
-    SOMAR_MOD
+    SOMAR_MOD,
+    MAIOR_IGUAL,
+    NEGATIVO,
+    NEGATIVO_MOD,
+    MOD,
+    LSH,
+    RSH
 } ULAControleEnum;
 
 typedef struct {
@@ -19,6 +26,7 @@ typedef struct {
 } ULA;
 
 ULA *ULA_criar(void);
+void ULA_free(ULA *ula);
 void ULA_executar(ULA *ula, PALAVRA a, PALAVRA b, ULAControleEnum controle);
 
 #endif

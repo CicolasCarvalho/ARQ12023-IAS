@@ -13,7 +13,7 @@
 #define ADD_OP_DIV(pipeline) CONFIG_INSTRUCAO(pipeline, op_div, OP_DIV)
 
 void op_div_busca_operandos(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
-void op_div_executar(int iteracao, BancoRegistradores *banco, ULA *ula);
-void op_div_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
+void op_div_executar(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags);
+void op_div_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags);
 
 #endif

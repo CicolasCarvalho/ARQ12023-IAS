@@ -20,10 +20,15 @@
     void (*nome)(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria)
 
 #define FUN_EXECUCAO(nome) \
-    void (*nome)(int iteracao, BancoRegistradores *banco, ULA *ula)
+    void (*nome)(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags)
 
 #define FUN_ESCRITA_RESULTADOS(nome) \
-    void (*nome)(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula)
+    void (*nome)(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags)
+
+typedef char PipelineFlag;
+
+#define PIPELINE_FLUSH (PipelineFlag)0b0001
+#define STOP (PipelineFlag)0b0010
 
 typedef struct {
     short tempo;
@@ -33,6 +38,8 @@ typedef struct {
 } InstrucaoConfig;
 
 typedef struct {
+    PipelineFlag flags;
+
     InstrucaoConfig instrucoes[OP_STOR + 1];
     uint8_t ciclo_execucao;
 
@@ -55,5 +62,7 @@ void pipeline_decodificar(Pipeline *pipeline, PALAVRA p1_MBR, PALAVRA *p2_IR, PA
 void pipeline_buscar_operandos(Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 void pipeline_executar(Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula);
 void pipeline_escrita_resultados(Pipeline *pipeline, PALAVRA p4_MBR, PALAVRA p4_MAR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
+void pipeline_flush(Pipeline *pipeline);
+
 
 #endif

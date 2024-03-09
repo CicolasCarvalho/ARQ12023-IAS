@@ -9,11 +9,12 @@
 #include "../memoria/memoria.h"
 #include "../barramento/barramento.h"
 #include "./defaults/buscar_operandos.h"
+#include "../pipeline/pipeline.h"
 
 #define ADD_OP_SUB(pipeline) CONFIG_INSTRUCAO(pipeline, op_sub, OP_SUB)
 
 void op_sub_busca_operandos(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
-void op_sub_executar(int iteracao, BancoRegistradores *banco, ULA *ula);
-void op_sub_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
+void op_sub_executar(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags);
+void op_sub_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags);
 
 #endif

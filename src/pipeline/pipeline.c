@@ -78,7 +78,7 @@ void pipeline_executar(
         Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
     banco->rMBR = p3_MBR;
 
-    pipeline->f_executar(pipeline->ciclo_execucao++, banco, ula);
+    pipeline->f_executar(pipeline->ciclo_execucao++, banco, ula, &pipeline->flags);
 
     InstrucaoConfig inst = pipeline_get_instrucao(*pipeline, p3_IR);
     if (pipeline->ciclo_execucao >= inst.tempo) {
@@ -99,6 +99,18 @@ void pipeline_escrita_resultados(
     banco->rMBR = p4_MBR;
     banco->rMAR = p4_MAR;
 
-    pipeline->f_escrita_resultados(banco, barramento, memoria, ula);
+    pipeline->f_escrita_resultados(banco, barramento, memoria, ula, &pipeline->flags);
     pipeline->f_escrita_resultados = NULL;
+}
+
+void pipeline_flush(Pipeline *pipeline) {
+    pipeline->ciclo_execucao = 0;
+
+    pipeline->f_buscar_instrucao = NULL;
+    pipeline->f_decodificar = NULL;
+    pipeline->f_busca_operandos = NULL;
+    pipeline->f_executar = NULL;
+    pipeline->f_escrita_resultados = NULL;
+
+    pipeline->flags &= ~PIPELINE_FLUSH;
 }

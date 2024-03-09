@@ -13,7 +13,7 @@
 #define ADD_OP_JUMP_COND_L(pipeline) CONFIG_INSTRUCAO(pipeline, op_jump_cond_l, OP_JUMP_COND_L)
 
 void op_jump_cond_l_busca_operandos(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
-void op_jump_cond_l_executar(int iteracao, BancoRegistradores *banco, ULA *ula);
-void op_jump_cond_l_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
+void op_jump_cond_l_executar(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags);
+void op_jump_cond_l_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags);
 
 #endif

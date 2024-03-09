@@ -20,6 +20,7 @@ CPU *CPU_criar(void) {
 
 void CPU_free(CPU *cpu) {
     UC_free(cpu->uc);
+    ULA_free(cpu->ula);
     free(cpu);
 }
 

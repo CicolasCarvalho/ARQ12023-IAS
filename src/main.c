@@ -83,6 +83,7 @@ int main(int argc, char **argv) {
         // IAS bootloader
         IAS_iniciar(ias, tamanho_dados);
         clock_update(ias, CLOCK_SPEED);
+        PRINT("Programa finalizado com sucesso!");
 
         IAS_free(ias);
     } else if (strcmp(argv[1], "-t") == 0) {
