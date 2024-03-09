@@ -237,15 +237,15 @@ static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
         operacao = OP_STOR;
     
     }  else if (strcmp(nome_operacao, "STORM") == 0) {
-        operacao = OP_STOR_M;
+        operacao = OP_STOR_L;
     
     } else if (strcmp(nome_operacao, "JUMP") == 0) {
         if (modificadores & MOD_MAIS) {
             modificadores &= ~MOD_MAIS;
 
-            operacao = OP_JUMP_COND;
+            operacao = OP_JUMP_COND_L;
         } else if (modificadores == 0) {
-            operacao = OP_JUMP;
+            operacao = OP_JUMP_L;
         }
     
     } else if (strcmp(nome_operacao, "ADD") == 0) {
@@ -285,7 +285,9 @@ static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
     if(cpu == NULL) {
         WARN("CPU e NULL, isso so deve acontecer caso esteja usando a flag '-t'");
         return;
-    } 
+    }
+
+    PRINT("configuracao: '%s'", optoa(operacao));
 
     pipeline_inserir_tempo_operacao(&cpu->uc->pipeline, operacao, num);
 }
@@ -294,7 +296,7 @@ static void compilar_linha(char *linha, Memoria *mem, int num_linha) {
     char *nome_operacao = except_proximo_simbolo(&linha, OPERACAO, num_linha).valor;    
     int num_mem = (num_linha - mem->tamanho_dados) / 2 + mem->tamanho_dados;
 
-    // PRINT("%i: %s", num_linha, nome_operacao);
+    PRINT("%i: %s", num_linha, nome_operacao);
     
     if (strcmp(nome_operacao, "LSH") == 0 || strcmp(nome_operacao, "RSH") == 0 || strcmp(nome_operacao, "EXIT") == 0) {
         if (nome_operacao[0] == 'L')

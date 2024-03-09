@@ -23,7 +23,7 @@
     void (*nome)(int iteracao, BancoRegistradores *banco, ULA *ula)
 
 #define FUN_ESCRITA_RESULTADOS(nome) \
-    void (*nome)(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria)
+    void (*nome)(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula)
 
 typedef struct {
     short tempo;
@@ -52,8 +52,8 @@ void pipeline_set_instrucao(Pipeline *pipeline, INSTRUCAO op,
 
 void pipeline_buscar_instrucao(Pipeline *pipeline, PALAVRA *p1_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 void pipeline_decodificar(Pipeline *pipeline, PALAVRA p1_MBR, PALAVRA *p2_IR, PALAVRA *p2_MAR, BancoRegistradores *banco);
-void pipeline_buscar_operandos(Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
-void pipeline_executar(Pipeline *pipeline, PALAVRA p3_IR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula);
-void pipeline_escrita_resultados(Pipeline *pipeline, PALAVRA p4_MBR, PALAVRA p4_MAR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
+void pipeline_buscar_operandos(Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
+void pipeline_executar(Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula);
+void pipeline_escrita_resultados(Pipeline *pipeline, PALAVRA p4_MBR, PALAVRA p4_MAR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
 
 #endif

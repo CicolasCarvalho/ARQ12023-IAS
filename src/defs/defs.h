@@ -30,11 +30,9 @@
 #define OP_LOAD_MQ          (INSTRUCAO)0b00001010
 #define OP_LOAD_MQ_M        (INSTRUCAO)0b00001001
 
-#define OP_JUMP             (INSTRUCAO)0b00001101
 #define OP_JUMP_L           (INSTRUCAO)0b00001101
 #define OP_JUMP_R           (INSTRUCAO)0b00001110
 
-#define OP_JUMP_COND        (INSTRUCAO)0b00001111
 #define OP_JUMP_COND_L      (INSTRUCAO)0b00001111
 #define OP_JUMP_COND_R      (INSTRUCAO)0b00010000
 
@@ -45,7 +43,6 @@
 #define OP_MUL              (INSTRUCAO)0b00001011
 #define OP_DIV              (INSTRUCAO)0b00001100
 
-#define OP_STOR_M           (INSTRUCAO)0b00010010
 #define OP_STOR_L           (INSTRUCAO)0b00010010
 #define OP_STOR_R           (INSTRUCAO)0b00010011
 

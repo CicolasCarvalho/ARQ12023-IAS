@@ -28,5 +28,7 @@ void rIR_load(BancoRegistradores *banco, PALAVRA origem, PALAVRA mask);
 PALAVRA rMQ_read(BancoRegistradores *banco);
 PALAVRA rMAR_read(BancoRegistradores *banco);
 PALAVRA rPC_read(BancoRegistradores *banco);
+PALAVRA rMBR_read(BancoRegistradores *banco);
+PALAVRA rAC_read(BancoRegistradores *banco);
 
 #endif

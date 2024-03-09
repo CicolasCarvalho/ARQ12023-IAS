@@ -17,6 +17,9 @@ void pipeline_inserir_tempo_operacao(Pipeline *pipeline, INSTRUCAO op, short tem
         pipeline->instrucoes[OP_JUMP_R].tempo = tempo;
     else if (op == OP_JUMP_R)
         pipeline->instrucoes[OP_JUMP_L].tempo = tempo;
+
+    if (op == OP_STOR_L)
+        pipeline->instrucoes[OP_STOR_R].tempo = tempo;
 }
 
 InstrucaoConfig pipeline_get_instrucao(Pipeline pipeline, INSTRUCAO op) {
@@ -58,7 +61,7 @@ void pipeline_decodificar(
 }
 
 void pipeline_buscar_operandos(
-        Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
+        Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
 
     banco->rMAR = p2_MAR;
 
@@ -66,14 +69,15 @@ void pipeline_buscar_operandos(
     pipeline->f_busca_operandos = NULL;
 
     *p3_IR = p2_IR;
+    *p3_MBR = banco->rMBR;
 
     pipeline->f_executar = pipeline_get_instrucao(*pipeline, p2_IR).f_executar;
-
-    PRINT("%s: %ld %ld", optoa(p2_IR), banco->rMAR, banco->rMBR);
 }
 
 void pipeline_executar(
-        Pipeline *pipeline, PALAVRA p3_IR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
+        Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
+    banco->rMBR = p3_MBR;
+
     pipeline->f_executar(pipeline->ciclo_execucao++, banco, ula);
 
     InstrucaoConfig inst = pipeline_get_instrucao(*pipeline, p3_IR);
@@ -90,11 +94,11 @@ void pipeline_executar(
 }
 
 void pipeline_escrita_resultados(
-        Pipeline *pipeline, PALAVRA p4_MBR, PALAVRA p4_MAR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
+        Pipeline *pipeline, PALAVRA p4_MBR, PALAVRA p4_MAR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula) {
 
     banco->rMBR = p4_MBR;
     banco->rMAR = p4_MAR;
 
-    pipeline->f_escrita_resultados(banco, barramento, memoria);
+    pipeline->f_escrita_resultados(banco, barramento, memoria, ula);
     pipeline->f_escrita_resultados = NULL;
 }

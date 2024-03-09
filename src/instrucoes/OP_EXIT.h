@@ -13,6 +13,6 @@
 
 void op_exit_busca_operandos(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 void op_exit_executar(int iteracao, BancoRegistradores *banco, ULA *ula);
-void op_exit_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
+void op_exit_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
 
 #endif

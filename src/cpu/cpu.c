@@ -13,6 +13,7 @@ CPU *CPU_criar(void) {
         .rIR  = 0,
     };
     cpu->uc = UC_criar();
+    cpu->ula = ULA_criar();
 
     return cpu;
 }

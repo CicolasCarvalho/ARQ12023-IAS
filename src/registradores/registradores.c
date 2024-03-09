@@ -53,3 +53,11 @@ PALAVRA rMAR_read(BancoRegistradores *banco) {
 PALAVRA rPC_read(BancoRegistradores *banco) {
     return banco->rPC;
 }
+
+PALAVRA rMBR_read(BancoRegistradores *banco) {
+    return banco->rMBR;
+}
+
+PALAVRA rAC_read(BancoRegistradores *banco) {
+    return banco->rAC;
+}
