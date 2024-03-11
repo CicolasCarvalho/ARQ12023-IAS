@@ -51,3 +51,19 @@ char *optoa(INSTRUCAO op) {
             return "unknown";
     }
 }
+
+PALAVRA convert_i64_i40(int64_t pal) {
+    bool negativo = (bool)(pal < 0);
+    pal = llabs(pal);
+    pal &= (MASK >> 1);
+    pal |= (negativo ? (1ll << 39): 0);
+
+    return pal;
+}
+
+int64_t convert_i40_i64(uint64_t pal) {
+    bool negativo = (bool)((pal & (1ll << 39)) > 0);
+    int64_t num = (int64_t)(pal & (MASK >> 1));
+
+    return negativo ? -num : num;
+}

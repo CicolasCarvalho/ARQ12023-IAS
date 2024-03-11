@@ -49,5 +49,7 @@
 #define OP_EXIT             (INSTRUCAO)0b11111111
 
 char *optoa(INSTRUCAO op);
+PALAVRA convert_i64_i40(int64_t pal);
+int64_t convert_i40_i64(PALAVRA pal);
 
 #endif

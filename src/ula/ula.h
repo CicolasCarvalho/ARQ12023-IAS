@@ -14,7 +14,6 @@ typedef enum {
     SOMAR_MOD,
     MAIOR_IGUAL,
     NEGATIVO,
-    NEGATIVO_MOD,
     MOD,
     LSH,
     RSH
