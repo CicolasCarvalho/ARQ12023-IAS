@@ -2,7 +2,7 @@
 
 void memoria_para_arquivo(FILE *file, Memoria *memoria) {
     for (int i = 0; i < memoria->tamanho; i++) {
-        PALAVRA pal = memoria_ler(memoria, i);
+        PALAVRA pal = memoria_ler(memoria, i, MASK);
 
         fprintf(file, "%lu\n", pal);
     }

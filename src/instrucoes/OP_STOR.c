@@ -10,5 +10,5 @@ void op_stor_executar(int iteracao, BancoRegistradores *banco, ULA *ula, Pipelin
 
 void op_stor_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags) {
     rMBR_load(banco, ula->saida);
-    escrever_resultados_memoria(banco, barramento, memoria);
+    escrever_resultados_memoria(banco, barramento, memoria, MASK);
 }

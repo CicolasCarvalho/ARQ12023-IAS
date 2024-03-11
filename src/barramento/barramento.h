@@ -9,7 +9,9 @@
 typedef enum {
     NENHUM,
     CARREGAR,
-    GUARDAR
+    GUARDAR,
+    GUARDAR_PARCIAL_L,
+    GUARDAR_PARCIAL_R
 } FUNCAO_BARRAMENTO_CONTROLE;
 
 typedef struct {

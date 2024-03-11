@@ -75,7 +75,8 @@ void pipeline_buscar_operandos(
 }
 
 void pipeline_executar(
-        Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
+        Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MAR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
+    banco->rMAR = p3_MAR;
     banco->rMBR = p3_MBR;
 
     pipeline->f_executar(pipeline->ciclo_execucao++, banco, ula, &pipeline->flags);

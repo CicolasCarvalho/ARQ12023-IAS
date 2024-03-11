@@ -19,6 +19,7 @@ void ULA_executar(ULA *ula, PALAVRA a, PALAVRA b, ULAControleEnum controle) {
             ula->saida = a;
             break;
         case SOMAR:
+            PRINT("SOMA '%ld' + '%ld", a, b);
             ula->saida = a + b;
             break;
         case SUBTRAIR:

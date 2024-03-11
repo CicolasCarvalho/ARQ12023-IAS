@@ -7,6 +7,6 @@
 #include "../../memoria/memoria.h"
 #include "../../defs/defs.h"
 
-void escrever_resultados_memoria(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
+void escrever_resultados_memoria(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, PALAVRA mask);
 
 #endif

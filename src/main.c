@@ -85,6 +85,12 @@ int main(int argc, char **argv) {
         clock_update(ias, CLOCK_SPEED);
         PRINT("Programa finalizado com sucesso!");
 
+        FILE *f_out = fopen("build/out.ias.d", "w");
+        if (!f_out) {
+            RAISE("Arquivo '%s' não encontrado", "build/out.ias.d");
+        }
+
+        memoria_para_arquivo(f_out, mem);
         IAS_free(ias);
     } else if (strcmp(argv[1], "-t") == 0) {
         char *in = argv[2];

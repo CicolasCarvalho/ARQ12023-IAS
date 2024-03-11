@@ -32,12 +32,13 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
     }
 
     static PALAVRA  p3_IR  = 0,
+                    p3_MAR = 0,
                     p3_MBR = 0;
 
     if (uc->pipeline.f_executar && !uc->pipeline.f_escrita_resultados) {
         PRINT("-- Execucao --");
         PRINT("p3_IR: (%s)", optoa(p3_IR));
-        pipeline_executar(&uc->pipeline, p3_IR, p3_MBR, &p4_MAR, &p4_MBR, banco, ula);
+        pipeline_executar(&uc->pipeline, p3_IR, p3_MAR, p3_MBR, &p4_MAR, &p4_MBR, banco, ula);
 
         if (uc->pipeline.flags & PIPELINE_FLUSH || uc->pipeline.flags & STOP) return;
     }
