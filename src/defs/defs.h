@@ -53,7 +53,7 @@ typedef char PipelineFlag;
 #define PIPELINE_FLUSH          (PipelineFlag)0b0000001
 #define STOP                    (PipelineFlag)0b0000010
 #define STOR_EXECUTADO          (PipelineFlag)0b0000100
-#define STOR_PARCIAL_EXECUTANDO (PipelineFlag)0b0001000
+#define STOR_PARCIAL_FINALIZADO (PipelineFlag)0b0001000
 #define CARREGAR_DIREITA        (PipelineFlag)0b0010000
 
 char *optoa(INSTRUCAO op);

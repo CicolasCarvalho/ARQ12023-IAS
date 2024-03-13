@@ -286,7 +286,7 @@ static void compilar_linha_configuracao(char *linha, CPU *cpu, int num_linha) {
 
     PRINT("configuracao: '%s'", optoa(operacao));
 
-    pipeline_inserir_tempo_operacao(&cpu->uc->pipeline, operacao, num);
+    pipeline_inserir_tempo_operacao(cpu->uc->pipeline, operacao, num);
 }
 
 static void compilar_linha(char *linha, Memoria *mem, int num_linha) {

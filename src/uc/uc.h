@@ -11,7 +11,7 @@
 #include "../instrucoes/defaults/buscar_instrucao.h"
 
 typedef struct {
-    Pipeline pipeline;
+    Pipeline *pipeline;
 } UC;
 
 UC *UC_criar(void);

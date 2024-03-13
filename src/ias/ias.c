@@ -28,5 +28,5 @@ void IAS_iniciar(IAS *ias, PALAVRA PC) {
 void IAS_tick(IAS *ias) {
     CPU_tick(ias->cpu, ias->barramento, ias->memoria);
 
-    ias->config.rodando = (char)!(ias->cpu->uc->pipeline.flags & STOP);
+    ias->config.rodando = (char)!(ias->cpu->uc->pipeline->flags & STOP) ;
 }

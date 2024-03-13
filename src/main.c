@@ -9,6 +9,10 @@
 #define CLOCK_SPEED 1000 // Hz
 #define RODAR_SEM_CLOCK false
 
+double timeofday_ms(struct timeval tv) {
+    return ((double)tv.tv_usec / 1000000.) + ((double)tv.tv_sec);
+}
+
 void clock_update(IAS *ias, int speed) {
     double tick_time = 1./speed,
            time_start,
@@ -17,11 +21,11 @@ void clock_update(IAS *ias, int speed) {
                    tv_elapsed;
 
     gettimeofday(&tv_start, NULL);
-    time_start = ((double)tv_start.tv_usec / 1000000.) + ((double)tv_start.tv_sec);
+    time_start = timeofday_ms(tv_start);
 
     while (ias->config.rodando) {
         gettimeofday(&tv_elapsed, NULL);
-        time_elapsed = ((double)tv_elapsed.tv_usec / 1000000.) + ((double)tv_elapsed.tv_sec);
+        time_elapsed = timeofday_ms(tv_elapsed);
 
         if (RODAR_SEM_CLOCK || (time_elapsed - time_start) > tick_time) {
             IAS_tick(ias);
@@ -31,7 +35,7 @@ void clock_update(IAS *ias, int speed) {
 }
 
 void configurar_instrucoes(CPU *cpu) {
-    add_instrucoes(&cpu->uc->pipeline);
+    add_instrucoes(cpu->uc->pipeline);
 }
 
 int main(int argc, char **argv) {
@@ -52,6 +56,10 @@ int main(int argc, char **argv) {
         }
         int tamanho_dados = atoi(argv[4]);
 
+        struct timeval time_start,
+                       time_end;
+        gettimeofday(&time_start, NULL);
+
         Memoria *mem = memoria_criar(TAMANHO, tamanho_dados);
         CPU *cpu = CPU_criar();
         Barramento *barramento = barramento_criar();
@@ -61,10 +69,12 @@ int main(int argc, char **argv) {
 
         compilar_para_IAS(f, ias);
         PRINT("compilado com sucesso!");
-        
+
         IAS_iniciar(ias, tamanho_dados);
         clock_update(ias, CLOCK_SPEED);
-        PRINT("Programa finalizado com sucesso!");
+
+        gettimeofday(&time_end, NULL);
+        PRINT("Programa finalizado em (%lf ms) com sucesso!", timeofday_ms(time_end) - timeofday_ms(time_start));
 
         FILE *f_out = fopen("build/out.ias.d", "w");
         if (!f_out) {
