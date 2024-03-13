@@ -5,7 +5,7 @@ void op_mul_busca_operandos(BancoRegistradores *banco, Barramento *barramento, M
 }
 
 void op_mul_executar(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags) {
-    if (iteracao == 0) ULA_executar(ula, rMBR_read(banco), 0, MULTIPLICAR);
+    if (iteracao == 0) ULA_executar(ula, rMBR_read(banco), rMQ_read(banco), MULTIPLICAR);
 }
 
 void op_mul_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags) {

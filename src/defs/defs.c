@@ -58,11 +58,13 @@ PALAVRA i64toi40(int64_t pal) {
     pal &= (MASK >> 1);
     pal |= (negativo ? (1ll << 39): 0);
 
+    // PRINT("%ld", pal);
+
     return pal;
 }
 
-int64_t i40toi64(uint64_t pal) {
-    bool negativo = (bool)((pal & (1ll << 39)) > 0);
+int64_t i40toi64(PALAVRA pal) {
+    bool negativo = (bool)(pal >> 39);
     int64_t num = (int64_t)(pal & (MASK >> 1));
 
     return negativo ? -num : num;

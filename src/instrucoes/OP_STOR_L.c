@@ -10,7 +10,6 @@ void op_stor_l_executar(int iteracao, BancoRegistradores *banco, ULA *ula, Pipel
 }
 
 void op_stor_l_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags) {
-    // TODO: ESCRITA PARCIAL NA MEMORIA
     rMBR_load(banco, ula->saida);
     escrever_resultados_memoria(banco, barramento, memoria, LEFT_MASK);
     *flags &= ~STOR_PARCIAL_EXECUTANDO;

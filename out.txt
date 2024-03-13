@@ -1,0 +1,371 @@
+src/tradutor/tradutor.c:287: configuracao: 'OP_LOAD_MQ'
+src/tradutor/tradutor.c:287: configuracao: 'OP_LOAD_MQ_M'
+src/tradutor/tradutor.c:287: configuracao: 'OP_LOAD_MENOS'
+src/tradutor/tradutor.c:287: configuracao: 'OP_LOAD_MOD'
+src/tradutor/tradutor.c:287: configuracao: 'OP_LOAD_MENOS_MOD'
+src/tradutor/tradutor.c:287: configuracao: 'OP_JUMP_COND_L'
+src/tradutor/tradutor.c:287: configuracao: 'OP_STOR'
+src/tradutor/tradutor.c:287: configuracao: 'OP_STOR_L'
+src/tradutor/tradutor.c:287: configuracao: 'OP_ADD'
+src/tradutor/tradutor.c:287: configuracao: 'OP_STOR'
+src/tradutor/tradutor.c:287: configuracao: 'OP_LOAD'
+src/tradutor/tradutor.c:287: configuracao: 'OP_EXIT'
+src/defs/defs.c:61: 0
+src/memoria/memoria.c:25: 0 0 0
+src/defs/defs.c:61: 1
+src/memoria/memoria.c:25: 1 0 1
+src/defs/defs.c:61: 0
+src/memoria/memoria.c:25: 2 0 0
+src/defs/defs.c:61: 0
+src/memoria/memoria.c:25: 3 0 0
+src/defs/defs.c:61: 0
+src/memoria/memoria.c:25: 4 0 0
+src/defs/defs.c:61: 1
+src/memoria/memoria.c:25: 5 0 1
+src/defs/defs.c:61: 2
+src/memoria/memoria.c:25: 6 0 2
+src/defs/defs.c:61: 2
+src/memoria/memoria.c:25: 7 0 2
+src/defs/defs.c:61: 1
+src/memoria/memoria.c:25: 8 0 1
+src/defs/defs.c:61: 11
+src/memoria/memoria.c:25: 9 0 11
+src/defs/defs.c:61: 15
+src/memoria/memoria.c:25: 10 0 15
+src/defs/defs.c:61: 1
+src/memoria/memoria.c:25: 11 0 1
+src/defs/defs.c:61: 2
+src/memoria/memoria.c:25: 12 0 2
+src/defs/defs.c:61: 2
+src/memoria/memoria.c:25: 13 0 2
+src/defs/defs.c:61: 3
+src/memoria/memoria.c:25: 14 0 3
+src/defs/defs.c:61: 4
+src/memoria/memoria.c:25: 15 0 4
+src/defs/defs.c:61: 5
+src/memoria/memoria.c:25: 16 0 5
+src/tradutor/tradutor.c:296: 17: LOAD
+src/memoria/memoria.c:25: 17 0 4096
+src/tradutor/tradutor.c:296: 18: STOR
+src/memoria/memoria.c:25: 17 0 4295102466
+src/tradutor/tradutor.c:296: 19: LOAD
+src/memoria/memoria.c:25: 18 0 4096
+src/tradutor/tradutor.c:296: 20: STOR
+src/memoria/memoria.c:25: 18 0 4295102467
+src/tradutor/tradutor.c:296: 21: LOAD
+src/memoria/memoria.c:25: 19 0 4096
+src/tradutor/tradutor.c:296: 22: STOR
+src/memoria/memoria.c:25: 19 0 4295102468
+src/tradutor/tradutor.c:296: 23: LOAD
+src/memoria/memoria.c:25: 20 0 4098
+src/tradutor/tradutor.c:296: 24: SUB
+src/memoria/memoria.c:25: 20 0 4297089031
+src/tradutor/tradutor.c:296: 25: JUMP
+src/memoria/memoria.c:25: 21 0 61493
+src/tradutor/tradutor.c:296: 26: LOAD
+src/memoria/memoria.c:25: 21 0 64480088067
+src/tradutor/tradutor.c:296: 27: SUB
+src/memoria/memoria.c:25: 22 0 24583
+src/tradutor/tradutor.c:296: 28: JUMP
+src/memoria/memoria.c:25: 22 0 25777209374
+src/tradutor/tradutor.c:296: 29: LOAD
+src/memoria/memoria.c:25: 23 0 36866
+src/tradutor/tradutor.c:296: 30: MUL
+src/memoria/memoria.c:25: 23 0 38656847879
+src/tradutor/tradutor.c:296: 31: LOAD
+src/memoria/memoria.c:25: 24 0 40960
+src/tradutor/tradutor.c:296: 32: ADD
+src/memoria/memoria.c:25: 24 0 42949693443
+src/tradutor/tradutor.c:296: 33: ADD
+src/memoria/memoria.c:25: 25 0 20489
+src/tradutor/tradutor.c:296: 34: STOR
+src/memoria/memoria.c:25: 25 0 21484351514
+src/tradutor/tradutor.c:296: 35: STOR
+src/memoria/memoria.c:25: 26 0 73756
+src/tradutor/tradutor.c:296: 36: LOAD
+src/memoria/memoria.c:25: 26 0 77338808320
+src/tradutor/tradutor.c:296: 37: MUL
+src/memoria/memoria.c:25: 27 0 45062
+src/tradutor/tradutor.c:296: 38: LOAD
+src/memoria/memoria.c:25: 27 0 47250972672
+src/tradutor/tradutor.c:296: 39: STOR
+src/memoria/memoria.c:25: 28 0 135168
+src/tradutor/tradutor.c:296: 40: LOAD
+src/memoria/memoria.c:25: 28 0 141733924867
+src/tradutor/tradutor.c:296: 41: ADD
+src/memoria/memoria.c:25: 29 0 20481
+src/tradutor/tradutor.c:296: 42: STOR
+src/memoria/memoria.c:25: 29 0 21476020227
+src/tradutor/tradutor.c:296: 43: JUMP
+src/memoria/memoria.c:25: 30 0 53270
+src/tradutor/tradutor.c:296: 44: LOAD
+src/memoria/memoria.c:25: 30 0 55857647616
+src/tradutor/tradutor.c:296: 45: STOR
+src/memoria/memoria.c:25: 31 0 135171
+src/tradutor/tradutor.c:296: 46: LOAD
+src/memoria/memoria.c:25: 31 0 141737070596
+src/tradutor/tradutor.c:296: 47: SUB
+src/memoria/memoria.c:25: 32 0 24584
+src/tradutor/tradutor.c:296: 48: JUMP
+src/memoria/memoria.c:25: 32 0 25778253875
+src/tradutor/tradutor.c:296: 49: LOAD
+src/memoria/memoria.c:25: 33 0 4099
+src/tradutor/tradutor.c:296: 50: SUB
+src/memoria/memoria.c:25: 33 0 4298137607
+src/tradutor/tradutor.c:296: 51: JUMP
+src/memoria/memoria.c:25: 34 0 61489
+src/tradutor/tradutor.c:296: 52: LOAD
+src/memoria/memoria.c:25: 34 0 64475926530
+src/tradutor/tradutor.c:296: 53: MUL
+src/memoria/memoria.c:25: 35 0 45063
+src/tradutor/tradutor.c:296: 54: LOAD
+src/memoria/memoria.c:25: 35 0 47252021248
+src/tradutor/tradutor.c:296: 55: ADD
+src/memoria/memoria.c:25: 36 0 20483
+src/tradutor/tradutor.c:296: 56: ADD
+src/memoria/memoria.c:25: 36 0 21478002697
+src/tradutor/tradutor.c:296: 57: STOR
+src/memoria/memoria.c:25: 37 0 73774
+src/tradutor/tradutor.c:296: 58: STOR
+src/memoria/memoria.c:25: 37 0 77357723694
+src/tradutor/tradutor.c:296: 59: LOAD
+src/memoria/memoria.c:25: 38 0 36866
+src/tradutor/tradutor.c:296: 60: MUL
+src/memoria/memoria.c:25: 38 0 38656847880
+src/tradutor/tradutor.c:296: 61: LOAD
+src/memoria/memoria.c:25: 39 0 40960
+src/tradutor/tradutor.c:296: 62: ADD
+src/memoria/memoria.c:25: 39 0 42949693444
+src/tradutor/tradutor.c:296: 63: ADD
+src/memoria/memoria.c:25: 40 0 20490
+src/tradutor/tradutor.c:296: 64: STOR
+src/memoria/memoria.c:25: 40 0 21485396012
+src/tradutor/tradutor.c:296: 65: LOAD
+src/memoria/memoria.c:25: 41 0 36867
+src/tradutor/tradutor.c:296: 66: MUL
+src/memoria/memoria.c:25: 41 0 38657896456
+src/tradutor/tradutor.c:296: 67: LOAD
+src/memoria/memoria.c:25: 42 0 40960
+src/tradutor/tradutor.c:296: 68: ADD
+src/memoria/memoria.c:25: 42 0 42949693444
+src/tradutor/tradutor.c:296: 69: ADD
+src/memoria/memoria.c:25: 43 0 20490
+src/tradutor/tradutor.c:296: 70: STOR
+src/memoria/memoria.c:25: 43 0 21485400108
+src/tradutor/tradutor.c:296: 71: LOAD
+src/memoria/memoria.c:25: 44 0 36864
+src/tradutor/tradutor.c:296: 72: MUL
+src/memoria/memoria.c:25: 44 0 38654750720
+src/tradutor/tradutor.c:296: 73: MUL
+src/memoria/memoria.c:25: 45 0 45061
+src/tradutor/tradutor.c:296: 74: LOAD
+src/memoria/memoria.c:25: 45 0 47249924096
+src/tradutor/tradutor.c:296: 75: ADD
+src/memoria/memoria.c:25: 46 0 20480
+src/tradutor/tradutor.c:296: 76: STOR
+src/memoria/memoria.c:25: 46 0 21474971648
+src/tradutor/tradutor.c:296: 77: LOAD
+src/memoria/memoria.c:25: 47 0 4099
+src/tradutor/tradutor.c:296: 78: ADD
+src/memoria/memoria.c:25: 47 0 4298133505
+src/tradutor/tradutor.c:296: 79: STOR
+src/memoria/memoria.c:25: 48 0 135171
+src/tradutor/tradutor.c:296: 80: JUMP
+src/memoria/memoria.c:25: 48 0 141737123873
+src/tradutor/tradutor.c:296: 81: LOAD
+src/memoria/memoria.c:25: 49 0 4100
+src/tradutor/tradutor.c:296: 82: ADD
+src/memoria/memoria.c:25: 49 0 4299182081
+src/tradutor/tradutor.c:296: 83: STOR
+src/memoria/memoria.c:25: 50 0 135172
+src/tradutor/tradutor.c:296: 84: JUMP
+src/memoria/memoria.c:25: 50 0 141738168352
+src/tradutor/tradutor.c:296: 85: LOAD
+src/memoria/memoria.c:25: 51 0 4098
+src/tradutor/tradutor.c:296: 86: ADD
+src/memoria/memoria.c:25: 51 0 4297084929
+src/tradutor/tradutor.c:296: 87: STOR
+src/memoria/memoria.c:25: 52 0 135171
+src/tradutor/tradutor.c:296: 88: JUMP
+src/memoria/memoria.c:25: 52 0 141737123860
+src/tradutor/tradutor.c:296: 89: EXIT
+src/memoria/memoria.c:25: 53 0 1044480
+src/main.c:63: compilado com sucesso!
+
+src/uc/uc.c:20: Tick! (0)
+src/uc/uc.c:24: Pipeline vazio!
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 17
+
+src/uc/uc.c:20: Tick! (1)
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_LOAD
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 17
+
+src/uc/uc.c:20: Tick! (2)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_LOAD
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_STOR
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 18
+
+src/uc/uc.c:20: Tick! (3)
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_LOAD)
+src/uc/uc.c:46: p3_MAR: (0)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_STOR
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_LOAD
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 18
+
+src/uc/uc.c:20: Tick! (4)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_STOR)
+src/uc/uc.c:46: p3_MAR: (2)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_LOAD
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_STOR
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 19
+
+src/uc/uc.c:20: Tick! (5)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/memoria/memoria.c:25: 2 0 0
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_LOAD)
+src/uc/uc.c:46: p3_MAR: (0)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_STOR
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_LOAD
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 19
+
+src/uc/uc.c:20: Tick! (6)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_STOR)
+src/uc/uc.c:46: p3_MAR: (3)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_LOAD
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_STOR
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 20
+
+src/uc/uc.c:20: Tick! (7)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/memoria/memoria.c:25: 3 0 0
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_LOAD)
+src/uc/uc.c:46: p3_MAR: (0)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_STOR
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_LOAD
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 20
+
+src/uc/uc.c:20: Tick! (8)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_STOR)
+src/uc/uc.c:46: p3_MAR: (4)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_LOAD
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_SUB
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 21
+
+src/uc/uc.c:20: Tick! (9)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/memoria/memoria.c:25: 4 0 0
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_LOAD)
+src/uc/uc.c:46: p3_MAR: (2)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (0)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_SUB
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_JUMP_COND_L
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 21
+
+src/uc/uc.c:20: Tick! (10)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_SUB)
+src/uc/uc.c:46: p3_MAR: (7)
+src/uc/uc.c:47: p3_MBR: (2)
+src/uc/uc.c:48: rAC: (0)
+src/defs/defs.c:61: 2
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_JUMP_COND_L
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_LOAD
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 22
+
+src/uc/uc.c:20: Tick! (11)
+src/uc/uc.c:32: -- Escrita de resultados --
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_JUMP_COND_L)
+src/uc/uc.c:46: p3_MAR: (53)
+src/uc/uc.c:47: p3_MBR: (1044480)
+src/uc/uc.c:48: rAC: (2)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_LOAD
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_SUB
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 22
+
+src/uc/uc.c:20: Tick! (12)
+src/uc/uc.c:32: -- Escrita de resultados --
+
+src/uc/uc.c:20: Tick! (13)
+src/uc/uc.c:24: Pipeline vazio!
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 53
+
+src/uc/uc.c:20: Tick! (14)
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: OP_EXIT
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 54
+
+src/uc/uc.c:20: Tick! (15)
+src/uc/uc.c:59: -- Busca de Operandos --
+src/uc/uc.c:60: rPC: OP_EXIT
+src/uc/uc.c:67: -- Decodificar --
+src/uc/uc.c:69: rPC: unknown
+src/uc/uc.c:73: -- Busca de Instrucoes --
+src/uc/uc.c:74: rPC: 55
+
+src/uc/uc.c:20: Tick! (16)
+src/uc/uc.c:44: -- Execucao --
+src/uc/uc.c:45: p3_IR: (OP_EXIT)
+src/uc/uc.c:46: p3_MAR: (0)
+src/uc/uc.c:47: p3_MBR: (0)
+src/uc/uc.c:48: rAC: (2)
+src/main.c:67: Programa finalizado com sucesso!

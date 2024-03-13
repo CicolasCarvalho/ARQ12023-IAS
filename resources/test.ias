@@ -1,10 +1,25 @@
-load: 1
+loadM: 1
+loadMM: 1
+load-M: 1
+load|M: 1
+load-|M: 1
+jump+: 1
 stor: 1
+storM: 1opsu
+add: 1
+stor: 1
+load: 1
 exit: 1
-storM: 1
+0
 1
-2
 LOAD M(0)
-STOR M(3, 8:19)
+JUMP M(6, 28:39)
+LOAD M(1)
+STOR M(0)
+LOAD M(1)
+STOR M(0)
+LOAD M(1)
+STOR M(0)
+LOAD M(1)
 STOR M(0)
 EXIT

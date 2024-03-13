@@ -1,7 +1,7 @@
 #include "OP_JUMP_L.h"
 
 void op_jump_l_busca_operandos(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
-    buscar_operandos(banco, barramento, memoria);
+    // buscar_operandos(banco, barramento, memoria);
 }
 
 void op_jump_l_executar(int iteracao, BancoRegistradores *banco, ULA *ula, PipelineFlag *flags) {

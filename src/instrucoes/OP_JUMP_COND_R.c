@@ -12,7 +12,7 @@ void op_jump_cond_r_executar(int iteracao, BancoRegistradores *banco, ULA *ula, 
 void op_jump_cond_r_escrita_resultados(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags) {
     if (ula->saida) {
         rPC_load(banco, rMAR_read(banco));
-        rIBR_reset(banco);
+        rIBR_load(banco, rMBR_read(banco));
         *flags |= PIPELINE_FLUSH;
     }
 }

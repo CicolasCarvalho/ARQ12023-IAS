@@ -15,13 +15,14 @@ void UC_free(UC *uc) {
 }
 
 void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
-    PRINT("Tick!");
+    static int count = 0;
+    printf("\n");
+    PRINT("Tick! (%i)", count++);
 
     if (uc->pipeline.flags & PIPELINE_FLUSH) {
         pipeline_flush(&uc->pipeline);
         PRINT("Pipeline vazio!");
         uc->pipeline.f_buscar_instrucao = buscar_instrucao;
-        // p1_MBR = 0;
     }
 
     static PALAVRA  p4_MBR = 0,
@@ -30,6 +31,7 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
     if (uc->pipeline.f_escrita_resultados) {
         PRINT("-- Escrita de resultados --");
         pipeline_escrita_resultados(&uc->pipeline, p4_MBR, p4_MAR, banco, barramento, memoria, ula);
+        // PRINT("rPC: %s\n", optoa(p2_IR));
 
         if (uc->pipeline.flags & PIPELINE_FLUSH || uc->pipeline.flags & STOP) return;
     }
@@ -41,6 +43,9 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
     if (uc->pipeline.f_executar && !uc->pipeline.f_escrita_resultados) {
         PRINT("-- Execucao --");
         PRINT("p3_IR: (%s)", optoa(p3_IR));
+        PRINT("p3_MAR: (%ld)", p3_MAR);
+        PRINT("p3_MBR: (%ld)", p3_MBR);
+        PRINT("rAC: (%ld)", banco->rAC);
         pipeline_executar(&uc->pipeline, p3_IR, p3_MAR, p3_MBR, &p4_MAR, &p4_MBR, banco, ula);
 
         if (uc->pipeline.flags & PIPELINE_FLUSH || uc->pipeline.flags & STOP) return;
@@ -52,6 +57,7 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
 
     if (uc->pipeline.f_busca_operandos && !uc->pipeline.f_executar && !possui_dependencia(uc->pipeline, p2_MAR, STOR_EXECUTADO)) {
         PRINT("-- Busca de Operandos --");
+        PRINT("rPC: %s", optoa(p2_IR));
         pipeline_buscar_operandos(&uc->pipeline, p2_IR, p2_MAR, &p3_IR, &p3_MAR, &p3_MBR, banco, barramento, memoria);
     }
 
@@ -59,8 +65,8 @@ void UC_tick(UC *uc, ULA *ula, BancoRegistradores *banco, Barramento *barramento
 
     if (uc->pipeline.f_decodificar && !uc->pipeline.f_busca_operandos) {
         PRINT("-- Decodificar --");
-
         pipeline_decodificar(&uc->pipeline, p1_MBR, &p2_IR, &p2_MAR, banco);
+        PRINT("rPC: %s", optoa(banco->rIR));
     }
 
     if (uc->pipeline.f_buscar_instrucao && !uc->pipeline.f_decodificar && !possui_dependencia(uc->pipeline, rPC_read(banco), STOR_PARCIAL_EXECUTANDO)) {

@@ -1,0 +1,25 @@
+load: 1
+stor: 1
+add: 1
+add|: 1
+sub: 1
+sub|: 1
+mul: 1
+div: 1
+lsh: 1
+rsh: 1
+exit: 1
+0
+1
+0
+load M(2)
+add  M(1)
+lsh
+lsh
+rsh
+stor M(2)
+load MQ, M(2)
+MUL M(2)
+LOAD MQ
+stor M(2)
+EXIT

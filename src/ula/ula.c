@@ -26,6 +26,7 @@ void ULA_executar(ULA *ula, PALAVRA a, PALAVRA b, ULAControleEnum controle) {
             break;
         case SUBTRAIR:
             ula->saida = i64toi40(a_i64 - b_i64);
+            PRINT("SUB %ld - %ld = %ld", a_i64, b_i64, ula->saida);
             break;
         case SUBTRAIR_MOD:
             ula->saida = i64toi40(a_i64 - b_i64);
@@ -47,7 +48,8 @@ void ULA_executar(ULA *ula, PALAVRA a, PALAVRA b, ULAControleEnum controle) {
             ula->saida &= MASK >> 1;
             break;
         case MAIOR_IGUAL:
-            ula->saida = i64toi40(a >= b);
+            ula->saida = (bool)(a_i64 >= b_i64);
+            PRINT("MAIOR_IGUAL %ld >= %ld = %ld", a_i64, b_i64, ula->saida);
             break;
         case NEGATIVO:
             ula->saida = a | (1ll << 39);
