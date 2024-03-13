@@ -175,7 +175,7 @@ void pipeline_enfileirar_dep(Pipeline *pipeline, INSTRUCAO op, ARGUMENTO posicao
         }
     }
 
-    WARN("FILA PIPELINE CHEIA");
+    WARN("fila dependencias cheia!");
 }
 
 void pipeline_pop_dep(Pipeline *pipeline) {
@@ -203,12 +203,12 @@ void pipeline_pop_dep(Pipeline *pipeline) {
         }
     }
 
-    WARN("FILA DEPENDENCIA VAZIA");
+    WARN("fila dependencia vazia");
 }
 
 void pipeline_unshift_dep(Pipeline *pipeline) {
     for (int i = 0; i < FILA_DEPENDENCIA_SIZE - 1; i++) {
-        PRINT("FILA DEPENDENCIA UNSHIFT (%s %d)", optoa(pipeline->fila_dependencia[i].op), pipeline->fila_dependencia[i].posicao);
+        PRINT("fila dependencia unshift (%s %d)", optoa(pipeline->fila_dependencia[i].op), pipeline->fila_dependencia[i].posicao);
         pipeline->fila_dependencia[i] = pipeline->fila_dependencia[i + 1];
         pipeline->fila_dependencia[i + 1] = (NoDependencia){
             .op = 0,
@@ -222,11 +222,9 @@ bool pipeline_checar_dep(Pipeline *pipeline, ARGUMENTO posicao, TipoDependencia 
         NoDependencia no = pipeline->fila_dependencia[i];
 
         if (no.op != 0 && no.posicao == posicao) {
-            if (tipo == STOR && no.op == OP_STOR) {
-                PRINT("DEPENDENCIA ENCONTRADA! (%s %d)", optoa(no.op), no.posicao);
-                return true;
-            } else if (tipo == STOR_LR && (no.op == OP_STOR_R || no.op == OP_STOR_L)) {
-                PRINT("DEPENDENCIA ENCONTRADA! (%s %d)", optoa(no.op), no.posicao);
+            PRINT("dependencia encontrada! (%s %d)", optoa(no.op), no.posicao);
+            if ((tipo == STOR    && no.op == OP_STOR) ||
+                (tipo == STOR_LR && (no.op == OP_STOR_R || no.op == OP_STOR_L))) {
                 return true;
             }
         }

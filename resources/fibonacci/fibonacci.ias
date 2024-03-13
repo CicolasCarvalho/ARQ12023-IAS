@@ -1,0 +1,18 @@
+loadM: 1
+loadMM: 1
+load-M: 1
+load|M: 1
+load-|M: 1
+jump+: 1
+stor: 1
+storM: 1
+add: 1
+stor: 1
+load: 1
+exit: 1
+0
+1
+0
+0
+0
+

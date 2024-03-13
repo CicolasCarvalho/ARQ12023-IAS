@@ -1,0 +1,50 @@
+10
+-1
+0
+1
+2
+3
+4
+5
+6
+7
+8
+7
+5
+load MQ, M(0)
+load MQ
+add 1
+stor M(4095) -- key
+load MQ, 0
+load MQ
+stor M(4094) -- low
+load MQ, M(0)
+load MQ
+sub 1
+stor M(4093) -- high
+load M(4093)
+div 2
+stor M(4092) -- mid
+load M(4092)
+sub M(4095)
+sub 1
+jump +M(22, 0:19) -- if mid == 0 ignore
+add 1
+jump +M(29, 20:19) -- if mid == 0 wil jump to end
+jump +M(23, 0:19) -- mid > key
+jump M(27, 0:19) -- mid < key
+load M(4093)
+div 2
+stor M(4092)
+load M(4092)
+div 2
+add M(4092)
+stor M(4092) -- high mid
+jump M(20, 20:39)
+load M(4093)
+div 2
+div 2
+stor M(4092) -- low mid
+jump M(20, 20:39)
+stor M(4091)
+EXIT
