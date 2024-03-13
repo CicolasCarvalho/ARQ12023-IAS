@@ -1,7 +1,10 @@
 load: 1
+stor: 1
 exit: 1
+storM: 1
 1
+2
 LOAD M(0)
-ADD  M(0)
+STOR M(3, 8:19)
 STOR M(0)
 EXIT

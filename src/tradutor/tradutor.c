@@ -146,12 +146,9 @@ static void compilar_secao_dados(FILE *in, Memoria *mem) {
             RAISE("Erro ao ler dado na posição %d", i);
         }
 
-        bool negativo = (bool)(dado < 0);
-        dado = llabs(dado);
-        dado &= (MASK >> 1);
-        dado |= (negativo ? (1ll << 39): 0);
+        PALAVRA dadoi40 = i64toi40(dado);
 
-        memoria_escrever(mem, i, dado, MASK);
+        memoria_escrever(mem, (int16_t)i, dadoi40, MASK);
 
         if (fpeek(in) != '\n') break;
         else fgetc(in);

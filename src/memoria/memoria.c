@@ -18,13 +18,18 @@ void memoria_free(Memoria *mem) {
 void memoria_escrever(Memoria *mem, uint pos, PALAVRA pal, PALAVRA mask) {
     // if (pos >= TAMANHO) RAISE("'%d' nao é uma posicao valida", pos);
 
+    PALAVRA palavra_antiga = memoria_ler(mem, pos, MASK) & ~mask;
+    pal &= mask;
+    pal |= palavra_antiga;
+
+    PRINT("%i %ld %ld", pos, palavra_antiga, pal);
     uint relativo = pos * 5;
 
-    mem->dados[relativo]     = (pal & 0xFF00000000 & mask) >> 32; // 0xFF = 0b11111111
-    mem->dados[relativo + 1] = (pal & 0x00FF000000 & mask) >> 24;
-    mem->dados[relativo + 2] = (pal & 0x0000FF0000 & mask) >> 16;
-    mem->dados[relativo + 3] = (pal & 0x000000FF00 & mask) >>  8;
-    mem->dados[relativo + 4] = (pal & 0x00000000FF & mask)      ;
+    mem->dados[relativo]     = (pal & 0xFF00000000) >> 32; // 0xFF = 0b11111111
+    mem->dados[relativo + 1] = (pal & 0x00FF000000) >> 24;
+    mem->dados[relativo + 2] = (pal & 0x0000FF0000) >> 16;
+    mem->dados[relativo + 3] = (pal & 0x000000FF00) >>  8;
+    mem->dados[relativo + 4] = (pal & 0x00000000FF)      ;
 }
 
 PALAVRA memoria_ler(Memoria *mem, uint pos, PALAVRA mask) {
@@ -59,9 +64,9 @@ void memoria_adicionar_instrucao(Memoria *mem, INSTRUCAO op, ARGUMENTO arg, uint
 void memoria_tick(Memoria *mem, Barramento *barramento) {
     PALAVRA mask = MASK;
     if (barramento->controle == GUARDAR_PARCIAL_L)
-        mask = LEFT_MASK;
+        mask = ARGUMENTO_MASK << 20;
     if (barramento->controle == GUARDAR_PARCIAL_R)
-        mask = RIGHT_MASK;
+        mask = ARGUMENTO_MASK;
 
     switch (barramento->controle) {
         case NENHUM: {

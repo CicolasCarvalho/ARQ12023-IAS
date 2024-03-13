@@ -41,19 +41,38 @@ void pipeline_buscar_instrucao(
 
     pipeline->f_buscar_instrucao(banco, barramento, memoria);
 
+    // TODO: COLOCAR MASCARA NA BUSCA INSTRUCAO
+    if (pipeline->flags & CARREGAR_DIREITA) {
+        rMBR_load(banco, rMBR_read(banco) & RIGHT_MASK);
+        pipeline->flags &= ~CARREGAR_DIREITA;
+    }
+
     *p1_MBR = banco->rMBR;
 
-    if (pipeline->f_decodificar == NULL) pipeline->f_decodificar = decodificar;
+    pipeline->f_decodificar = decodificar;
 }
 
 void pipeline_decodificar(
         Pipeline *pipeline, PALAVRA p1_MBR, PALAVRA *p2_IR, PALAVRA *p2_MAR, BancoRegistradores *banco) {
 
+    PALAVRA pc_execucao = banco->rPC;
+    // check in
     banco->rMBR = p1_MBR;
 
     pipeline->f_decodificar(banco);
     pipeline->f_decodificar = NULL;
 
+    if (banco->rIR == OP_STOR_R && rMAR_read(banco) == pc_execucao) {
+        pipeline->flags |= CARREGAR_DIREITA;
+        rIBR_reset(banco);
+    }
+
+    if (banco->rIR == OP_STOR_R || banco->rIR == OP_STOR_L) {
+        pipeline->flags |= STOR_PARCIAL_EXECUTANDO;
+        pipeline->memoria_escrita = banco->rMAR;
+    }
+
+    // check out
     *p2_IR  = banco->rIR;
     *p2_MAR = banco->rMAR;
 
@@ -61,7 +80,7 @@ void pipeline_decodificar(
 }
 
 void pipeline_buscar_operandos(
-        Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
+        Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MAR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria) {
 
     banco->rMAR = p2_MAR;
 
@@ -70,12 +89,14 @@ void pipeline_buscar_operandos(
 
     *p3_IR = p2_IR;
     *p3_MBR = banco->rMBR;
+    *p3_MAR = banco->rMAR;
 
     pipeline->f_executar = pipeline_get_instrucao(*pipeline, p2_IR).f_executar;
 }
 
 void pipeline_executar(
         Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MAR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula) {
+
     banco->rMAR = p3_MAR;
     banco->rMBR = p3_MBR;
 
@@ -83,7 +104,6 @@ void pipeline_executar(
 
     InstrucaoConfig inst = pipeline_get_instrucao(*pipeline, p3_IR);
     if (pipeline->ciclo_execucao >= inst.tempo) {
-        // if (pipeline->ciclo_execucao >= 1) {
         pipeline->ciclo_execucao = 0;
         pipeline->f_executar = NULL;
 

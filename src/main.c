@@ -32,27 +32,9 @@ void clock_update(IAS *ias, int speed) {
 
 void configurar_instrucoes(CPU *cpu) {
     add_instrucoes(&cpu->uc->pipeline);
-    // for (size_t i = 0; i < OP_STOR + 1; i++) {
-    //     cpu->uc->pipeline.instrucoes[i] = (InstrucaoConfig){0};
-    // }
 }
 
 int main(int argc, char **argv) {
-    // char *in = "./resources/in.ias";
-
-    // FILE *f = fopen(in, "r");
-    // if (!f) RAISE("Arquivo '%s' nao encontrado", in);
-
-    // IAS *ias = IAS_criar();
-    // Memoria *mem = memoria_criar(TAMANHO, 200);
-    // ias->memoria = mem;
-    // CPU *cpu = CPU_criar();
-    // ias->cpu = cpu;
-
-    // compilar_para_IAS(f, ias);
-
-    // return 0;
-
     if (argc <= 4) {
         RAISE("Numero de argumentos incompativel");
     }
@@ -80,7 +62,6 @@ int main(int argc, char **argv) {
         compilar_para_IAS(f, ias);
         PRINT("compilado com sucesso!");
         
-        // IAS bootloader
         IAS_iniciar(ias, tamanho_dados);
         clock_update(ias, CLOCK_SPEED);
         PRINT("Programa finalizado com sucesso!");

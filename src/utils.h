@@ -5,16 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef MAX_H_
-    #define MAX_H_
-    #define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
-
-#ifndef MIN_H_
-    #define MIN_H_
-    #define MIN(a, b) ((a) < (b) ? (a) : (b))
-#endif
-
 #ifndef LOG_H_
     #define LOG_H_
     #define PRINT(...)                             \
@@ -49,10 +39,6 @@
             NOME ## _executar,             \
             NOME ## _escrita_resultados    \
         )
-#endif
-
-#ifndef UNUSED
-    #define UNUSED(...) (void)(__VA_ARGS__)
 #endif
 
 // #ifndef STRCON_

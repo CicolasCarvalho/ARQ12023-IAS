@@ -9,9 +9,6 @@
 
 typedef struct {
     bool rodando;
-    // bool next_IBR;
-    // int tamanho;
-    // int tamanho_dados;
 } IASConfig;
 
 typedef struct {

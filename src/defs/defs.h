@@ -13,7 +13,7 @@
 #define PALAVRA uint64_t
 #define INSTRUCAO uint8_t
 #define ARGUMENTO uint16_t
-#define MASK (uint64_t)0xFFFFFFFFFF
+#define MASK (uint64_t)0xFFFFFFFFFF // 0b1111111111111111111111111111111111111111
 #define OP_MASK (uint64_t)0xFF000
 #define ARGUMENTO_MASK (uint64_t)0xFFF
 #define LEFT_MASK (uint64_t)0xFFFFF00000
@@ -48,8 +48,16 @@
 
 #define OP_EXIT             (INSTRUCAO)0b11111111
 
+typedef char PipelineFlag;
+
+#define PIPELINE_FLUSH          (PipelineFlag)0b0000001
+#define STOP                    (PipelineFlag)0b0000010
+#define STOR_EXECUTADO          (PipelineFlag)0b0000100
+#define STOR_PARCIAL_EXECUTANDO (PipelineFlag)0b0001000
+#define CARREGAR_DIREITA        (PipelineFlag)0b0010000
+
 char *optoa(INSTRUCAO op);
-PALAVRA convert_i64_i40(int64_t pal);
-int64_t convert_i40_i64(PALAVRA pal);
+PALAVRA i64toi40(int64_t pal);
+int64_t i40toi64(PALAVRA pal);
 
 #endif

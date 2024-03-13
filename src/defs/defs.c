@@ -52,7 +52,7 @@ char *optoa(INSTRUCAO op) {
     }
 }
 
-PALAVRA convert_i64_i40(int64_t pal) {
+PALAVRA i64toi40(int64_t pal) {
     bool negativo = (bool)(pal < 0);
     pal = llabs(pal);
     pal &= (MASK >> 1);
@@ -61,7 +61,7 @@ PALAVRA convert_i64_i40(int64_t pal) {
     return pal;
 }
 
-int64_t convert_i40_i64(uint64_t pal) {
+int64_t i40toi64(uint64_t pal) {
     bool negativo = (bool)((pal & (1ll << 39)) > 0);
     int64_t num = (int64_t)(pal & (MASK >> 1));
 

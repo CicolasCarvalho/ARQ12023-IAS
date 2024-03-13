@@ -7,7 +7,6 @@
 #include "../barramento/barramento.h"
 #include "../ula/ula.h"
 #include "../utils.h"
-#include "../pipeline/pipeline.h"
 #include "../instrucoes/defaults/decodificar.h"
 
 #define FUN_BUSCA_INSTRUCAO(nome) \
@@ -25,11 +24,6 @@
 #define FUN_ESCRITA_RESULTADOS(nome) \
     void (*nome)(BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula, PipelineFlag *flags)
 
-typedef char PipelineFlag;
-
-#define PIPELINE_FLUSH (PipelineFlag)0b0001
-#define STOP (PipelineFlag)0b0010
-
 typedef struct {
     short tempo;
     FUN_BUSCA_OPERANDOS(f_busca_operandos);
@@ -42,6 +36,7 @@ typedef struct {
 
     InstrucaoConfig instrucoes[OP_STOR + 1];
     uint8_t ciclo_execucao;
+    ARGUMENTO memoria_escrita;
 
     FUN_BUSCA_INSTRUCAO(f_buscar_instrucao);
     FUN_DECODIFICAR(f_decodificar);
@@ -59,7 +54,7 @@ void pipeline_set_instrucao(Pipeline *pipeline, INSTRUCAO op,
 
 void pipeline_buscar_instrucao(Pipeline *pipeline, PALAVRA *p1_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 void pipeline_decodificar(Pipeline *pipeline, PALAVRA p1_MBR, PALAVRA *p2_IR, PALAVRA *p2_MAR, BancoRegistradores *banco);
-void pipeline_buscar_operandos(Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
+void pipeline_buscar_operandos(Pipeline *pipeline, PALAVRA p2_IR, PALAVRA p2_MAR, PALAVRA *p3_IR, PALAVRA *p3_MAR, PALAVRA *p3_MBR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria);
 void pipeline_executar(Pipeline *pipeline, PALAVRA p3_IR, PALAVRA p3_MAR, PALAVRA p3_MBR, PALAVRA *p4_MAR, PALAVRA *p4_MBR, BancoRegistradores *banco, ULA *ula);
 void pipeline_escrita_resultados(Pipeline *pipeline, PALAVRA p4_MBR, PALAVRA p4_MAR, BancoRegistradores *banco, Barramento *barramento, Memoria *memoria, ULA *ula);
 void pipeline_flush(Pipeline *pipeline);
