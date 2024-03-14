@@ -114,6 +114,12 @@ static void compilar_secao_configuracao(FILE *in, CPU *cpu) {
     char c;
     bool fim = false;
 
+    if (fpeek(in) == '/') {
+        fgetc(in);
+        fgetc(in);
+        fgetc(in);
+    }
+
     while (!fim && n < NUM_INSTRUCOES) {
         c = charhigh((char)fgetc(in));
         
@@ -124,7 +130,12 @@ static void compilar_secao_configuracao(FILE *in, CPU *cpu) {
             op_len = 0;
 
             linha[0] = fpeek(in);
-            linha[1] = '\0';
+            if (linha[0] == '*') {
+                linha[0] = (char)fgetc(in);
+                linha[1] = (char)fgetc(in);
+                break;
+            }
+            linha[2] = '\0';
 
             if (e_numero(linha)) break;
         } else if (c == ' ') {

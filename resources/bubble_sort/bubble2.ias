@@ -1,0 +1,72 @@
+/*
+loadM: 11
+loadMM: 1
+stor: 2
+load: 3
+load-M: 4
+load|M: 5
+load-|M: 6
+jump: 7
+jump+: 8
+add: 9
+add|: 10
+sub: 11
+sub|: 12
+mul: 13
+div: 14
+lsh: 15
+rsh: 16
+storM: 17
+*/
+1
+0
+0
+0
+7
+18
+3
+1
+5
+6
+7
+9
+11
+1123
+17
+634
+29
+323
+77
+LOAD M(4)
+SUB M(5)
+SUB M(0)
+JUMP+ M(33, 20:39)
+LOAD M(5)
+SUB M(4)
+RSH
+ADD M(4)
+STOR M(1)
+STOR M(24, 8:19)
+LOAD M(3)
+SUB M(6)
+STOR M(2)
+LOAD |M(2)|
+LSH
+STOR M(3)
+LOAD |M(2)|
+SUB |M(3)|
+JUMP+ M(35, 0:19)
+LOAD M(2)
+JUMP+ M(31, 20:39)
+LOAD M(1)
+ADD M(0)
+STOR M(4)
+JUMP M(19, 0:19)
+LOAD M(1)
+SUB M(0)
+STOR M(5)
+JUMP M(19, 0:19)
+LOAD M(0)
+RSH
+STOR M(0)
+EXIT

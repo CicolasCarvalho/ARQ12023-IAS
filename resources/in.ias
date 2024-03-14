@@ -1,3 +1,4 @@
+/*
 loadM: 1
 loadMM: 1
 load-M: 1
@@ -10,6 +11,7 @@ add: 1
 stor: 12
 load: 3
 exit: 0
+*/
 -10
 2
 3

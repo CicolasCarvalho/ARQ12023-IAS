@@ -1,7 +1,26 @@
-10
--1
+/*
+loadM: 1
+loadMM: 1
+load-M: 1
+load|M: 1
+load-|M: 1
+jump+: 1
+stor: 1
+storM: 1
+add: 1
+stor: 1
+load: 1
+exit: 1
+*/
 0
 1
+0
+0
+9
+9
+10
+8
+-1
 2
 3
 4
@@ -9,42 +28,38 @@
 6
 7
 8
-7
-5
-load MQ, M(0)
-load MQ
-add 1
-stor M(4095) -- key
-load MQ, 0
-load MQ
-stor M(4094) -- low
-load MQ, M(0)
-load MQ
-sub 1
-stor M(4093) -- high
-load M(4093)
-div 2
-stor M(4092) -- mid
-load M(4092)
-sub M(4095)
-sub 1
-jump +M(22, 0:19) -- if mid == 0 ignore
-add 1
-jump +M(29, 20:19) -- if mid == 0 wil jump to end
-jump +M(23, 0:19) -- mid > key
-jump M(27, 0:19) -- mid < key
-load M(4093)
-div 2
-stor M(4092)
-load M(4092)
-div 2
-add M(4092)
-stor M(4092) -- high mid
-jump M(20, 20:39)
-load M(4093)
-div 2
-div 2
-stor M(4092) -- low mid
-jump M(20, 20:39)
-stor M(4091)
+9
+10
+0
+-1
+load    M(2)
+sub     M(1)
+sub     M(4)
+jump+   M(35, 0:19)
+load    M(2)
+add     M(4)
+lsh
+stor    M(3)
+load    M(3)
+add     M(7)
+stor    M(25, 28:39)
+load    M(0)
+stor    M(18)
+load    M(18)
+sub     M(5)
+jump+   M(30, 0:19)
+load    M(3)
+add     M(1)
+stor    M(2)
+jump    M(20, 0:19)
+load    M(5)
+sub     M(18)
+jump+   M(33, 20:39)
+load    M(3)
+sub     M(1)
+stor    M(4)
+jump    M(20, 0:19)
+load    M(3)
+stor    M(19)
+jump    M(20, 0:19)
 EXIT

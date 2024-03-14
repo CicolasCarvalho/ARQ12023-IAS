@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
         clock_update(ias, CLOCK_SPEED);
 
         gettimeofday(&time_end, NULL);
-        PRINT("Programa finalizado em (%lf ms) com sucesso!", timeofday_ms(time_end) - timeofday_ms(time_start));
+        PRINT("Programa finalizado em (%lf s) com sucesso!", timeofday_ms(time_end) - timeofday_ms(time_start));
 
         FILE *f_out = fopen("build/out.ias.d", "w");
         if (!f_out) {
